@@ -1,0 +1,247 @@
+{
+    "courseId": "java-basics",
+    "courseTitle": "Java Programming Basics",
+    "courseDescription": "Learn Java programming from scratch - perfect for beginners!",
+    "difficulty": "beginner",
+    "totalLessons": 5,
+    "lessons": [
+        {
+            "lessonNumber": 1,
+            "title": "Introduction to Java",
+            "topic": "What is Java?",
+            "description": "Learn about Java, its history, and how to write your first program",
+            "duration": "30 mins",
+            "objectives": [
+                "Understand what Java is and why it's popular",
+                "Set up Java development environment",
+                "Write and run your first Java program"
+            ],
+            "prerequisites": [],
+            "content": [
+                {
+                    "type": "text",
+                    "content": "Java is a high-level, object-oriented programming language developed by Sun Microsystems in 1995. It follows the principle of 'Write Once, Run Anywhere' (WORA), meaning compiled Java code can run on any platform that supports Java without recompilation."
+                },
+                {
+                    "type": "text",
+                    "content": "Java is widely used for:\n• Web applications (backend)\n• Android mobile apps\n• Enterprise software\n• Scientific computing\n• Big data technologies"
+                },
+                {
+                    "type": "code",
+                    "language": "java",
+                    "code": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}",
+                    "explanation": "This is your first Java program! The 'public class HelloWorld' defines a class named HelloWorld. The 'main' method is the entry point where the program starts. System.out.println prints text to the console."
+                },
+                {
+                    "type": "example",
+                    "title": "Understanding Program Structure",
+                    "description": "Every Java program must have a class and a main method to run",
+                    "code": "// File: MyProgram.java\npublic class MyProgram {\n    public static void main(String[] args) {\n        // This is a comment\n        System.out.println(\"Welcome to Java!\");\n        System.out.println(\"This is my first program\");\n    }\n}"
+                }
+            ],
+            "summary": "Java is a powerful, platform-independent programming language. Every Java program needs a class with a main method to execute.",
+            "keyPoints": [
+                "Java is platform-independent (WORA)",
+                "Every Java program needs a class",
+                "The main method is the entry point",
+                "System.out.println() prints output",
+                "Java files have .java extension"
+            ],
+            "practiceExercise": {
+                "description": "Create your own Java program",
+                "task": "Write a Java program that prints your name and age on separate lines",
+                "hint": "Use System.out.println() twice - once for name, once for age",
+                "solution": "public class MyInfo {\n    public static void main(String[] args) {\n        System.out.println(\"John Doe\");\n        System.out.println(25);\n    }\n}"
+            }
+        },
+        {
+            "lessonNumber": 2,
+            "title": "Variables and Data Types",
+            "topic": "Java Variables",
+            "description": "Learn how to store and manipulate data using variables",
+            "duration": "45 mins",
+            "objectives": [
+                "Understand different data types in Java",
+                "Declare and initialize variables",
+                "Perform basic operations with variables"
+            ],
+            "prerequisites": [
+                "Lesson 1: Introduction to Java"
+            ],
+            "content": [
+                {
+                    "type": "text",
+                    "content": "Variables are containers for storing data values. In Java, each variable must have a specific data type that determines what kind of data it can hold."
+                },
+                {
+                    "type": "code",
+                    "language": "java",
+                    "code": "// Primitive Data Types\nbyte b = 100;          // 8-bit integer\nshort s = 1000;        // 16-bit integer\nint age = 25;          // 32-bit integer (most common)\nlong big = 100000L;    // 64-bit integer\nfloat price = 19.99f;  // 32-bit decimal\ndouble pi = 3.14159;   // 64-bit decimal (most common)\nchar grade = 'A';      // Single character\nboolean isJavaFun = true; // true or false",
+                    "explanation": "Java has 8 primitive data types. int and double are the most commonly used. Notice the 'f' suffix for float and 'L' for long."
+                },
+                {
+                    "type": "example",
+                    "title": "Working with Variables",
+                    "description": "Declare variables, assign values, and perform operations",
+                    "code": "public class VariableExample {\n    public static void main(String[] args) {\n        // Declare and initialize variables\n        String name = \"Alice\";\n        int age = 22;\n        double height = 5.6;\n        boolean isStudent = true;\n        \n        // Print variables\n        System.out.println(\"Name: \" + name);\n        System.out.println(\"Age: \" + age);\n        System.out.println(\"Height: \" + height);\n        System.out.println(\"Student: \" + isStudent);\n        \n        // Perform calculations\n        int birthYear = 2024 - age;\n        System.out.println(\"Born in: \" + birthYear);\n    }\n}"
+                }
+            ],
+            "summary": "Variables store data in Java. Each variable has a type that determines what data it can hold. Use descriptive names for variables.",
+            "keyPoints": [
+                "Variables must be declared with a type",
+                "Java has 8 primitive data types",
+                "String is a reference type (not primitive)",
+                "Use camelCase for variable names",
+                "Variables can be updated after declaration"
+            ],
+            "practiceExercise": {
+                "description": "Create a personal info program",
+                "task": "Create variables for your name (String), age (int), height (double), and whether you like programming (boolean). Print all of them.",
+                "hint": "String uses double quotes, char uses single quotes",
+                "solution": "public class PersonalInfo {\n    public static void main(String[] args) {\n        String name = \"Bob\";\n        int age = 30;\n        double height = 5.9;\n        boolean likesProgramming = true;\n        \n        System.out.println(\"Name: \" + name);\n        System.out.println(\"Age: \" + age);\n        System.out.println(\"Height: \" + height);\n        System.out.println(\"Likes Programming: \" + likesProgramming);\n    }\n}"
+            }
+        },
+        {
+            "lessonNumber": 3,
+            "title": "Control Flow - If/Else",
+            "topic": "Decision Making",
+            "description": "Learn how to make decisions in your code using conditional statements",
+            "duration": "45 mins",
+            "objectives": [
+                "Understand boolean expressions",
+                "Use if, else if, and else statements",
+                "Create programs that make decisions"
+            ],
+            "prerequisites": [
+                "Lesson 2: Variables and Data Types"
+            ],
+            "content": [
+                {
+                    "type": "text",
+                    "content": "Control flow statements allow your program to make decisions and execute different code based on conditions. The if-else statement is the most basic form of control flow."
+                },
+                {
+                    "type": "code",
+                    "language": "java",
+                    "code": "int score = 85;\n\nif (score >= 90) {\n    System.out.println(\"Grade: A\");\n} else if (score >= 80) {\n    System.out.println(\"Grade: B\");\n} else if (score >= 70) {\n    System.out.println(\"Grade: C\");\n} else {\n    System.out.println(\"Grade: F\");\n}\n// Output: Grade: B",
+                    "explanation": "The if statement checks conditions from top to bottom. The first condition that is true executes its block. If none are true, the else block runs."
+                },
+                {
+                    "type": "example",
+                    "title": "Number Checker",
+                    "description": "Check if a number is positive, negative, or zero",
+                    "code": "public class NumberChecker {\n    public static void main(String[] args) {\n        int number = -5;\n        \n        if (number > 0) {\n            System.out.println(number + \" is positive\");\n        } else if (number < 0) {\n            System.out.println(number + \" is negative\");\n        } else {\n            System.out.println(\"Number is zero\");\n        }\n        \n        // Check if even or odd\n        if (number % 2 == 0) {\n            System.out.println(number + \" is even\");\n        } else {\n            System.out.println(number + \" is odd\");\n        }\n    }\n}"
+                }
+            ],
+            "summary": "If-else statements let your code make decisions. Use comparison operators (>, <, ==, !=, >=, <=) to create conditions.",
+            "keyPoints": [
+                "if executes code when condition is true",
+                "else if checks additional conditions",
+                "else runs when no conditions are true",
+                "Use == to compare values (not =)",
+                "Conditions must be boolean expressions"
+            ],
+            "practiceExercise": {
+                "description": "Create a temperature advisor",
+                "task": "Write a program that takes a temperature (int) and prints: 'Hot' if > 30, 'Warm' if > 20, 'Cool' if > 10, 'Cold' otherwise",
+                "hint": "Check the highest temperature first, then work down",
+                "solution": "public class TemperatureAdvisor {\n    public static void main(String[] args) {\n        int temp = 25;\n        \n        if (temp > 30) {\n            System.out.println(\"Hot\");\n        } else if (temp > 20) {\n            System.out.println(\"Warm\");\n        } else if (temp > 10) {\n            System.out.println(\"Cool\");\n        } else {\n            System.out.println(\"Cold\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "lessonNumber": 4,
+            "title": "Loops - For and While",
+            "topic": "Repetition in Code",
+            "description": "Learn how to repeat actions using loops",
+            "duration": "50 mins",
+            "objectives": [
+                "Understand when to use loops",
+                "Use for loops for counted repetition",
+                "Use while loops for conditional repetition"
+            ],
+            "prerequisites": [
+                "Lesson 3: Control Flow"
+            ],
+            "content": [
+                {
+                    "type": "text",
+                    "content": "Loops allow you to execute a block of code multiple times. Java has three types of loops: for, while, and do-while. Each is useful in different situations."
+                },
+                {
+                    "type": "code",
+                    "language": "java",
+                    "code": "// For loop - when you know how many times\nfor (int i = 1; i <= 5; i++) {\n    System.out.println(\"Count: \" + i);\n}\n// Output: Count: 1, Count: 2, Count: 3, Count: 4, Count: 5\n\n// While loop - when you don't know how many times\nint num = 100;\nwhile (num > 0) {\n    System.out.print(num + \" \");\n    num -= 20;\n}\n// Output: 100 80 60 40 20",
+                    "explanation": "For loops have initialization, condition, and increment in one line. While loops only have a condition and are useful when the number of iterations is unknown."
+                },
+                {
+                    "type": "example",
+                    "title": "Multiplication Table",
+                    "description": "Print the multiplication table for any number",
+                    "code": "public class MultiplicationTable {\n    public static void main(String[] args) {\n        int number = 7;\n        \n        System.out.println(\"Multiplication Table of \" + number);\n        \n        for (int i = 1; i <= 10; i++) {\n            int result = number * i;\n            System.out.println(number + \" x \" + i + \" = \" + result);\n        }\n    }\n}"
+                }
+            ],
+            "summary": "Loops repeat code. Use for loops when you know the count, while loops when you have a condition to check.",
+            "keyPoints": [
+                "For loop: for(init; condition; increment)",
+                "While loop: while(condition)",
+                "Be careful of infinite loops",
+                "Use break to exit a loop early",
+                "Use continue to skip to next iteration"
+            ],
+            "practiceExercise": {
+                "description": "Create a countdown program",
+                "task": "Write a program that counts down from 10 to 1, then prints 'Blastoff!'",
+                "hint": "Start at 10, go down while > 0, decrement by 1 each time",
+                "solution": "public class Countdown {\n    public static void main(String[] args) {\n        for (int i = 10; i > 0; i--) {\n            System.out.println(i);\n        }\n        System.out.println(\"Blastoff!\");\n    }\n}"
+            }
+        },
+        {
+            "lessonNumber": 5,
+            "title": "Arrays",
+            "topic": "Working with Collections",
+            "description": "Learn how to store and manage multiple values using arrays",
+            "duration": "45 mins",
+            "objectives": [
+                "Understand what arrays are and why they're useful",
+                "Create and initialize arrays",
+                "Access and modify array elements",
+                "Loop through arrays"
+            ],
+            "prerequisites": [
+                "Lesson 4: Loops"
+            ],
+            "content": [
+                {
+                    "type": "text",
+                    "content": "An array is a container object that holds a fixed number of values of a single type. Arrays are useful when you need to work with multiple related values."
+                },
+                {
+                    "type": "code",
+                    "language": "java",
+                    "code": "// Declare and initialize an array\nint[] numbers = {10, 20, 30, 40, 50};\nString[] fruits = {\"Apple\", \"Banana\", \"Orange\"};\n\n// Access elements (index starts at 0)\nSystem.out.println(\"First number: \" + numbers[0]);  // 10\nSystem.out.println(\"Second fruit: \" + fruits[1]);   // Banana\n\n// Array length\nSystem.out.println(\"Array size: \" + numbers.length); // 5\n\n// Loop through array\nfor (int i = 0; i < numbers.length; i++) {\n    System.out.println(\"Element \" + i + \": \" + numbers[i]);\n}",
+                    "explanation": "Arrays use zero-based indexing (first element is at index 0). The length property tells you how many elements are in the array."
+                },
+                {
+                    "type": "example",
+                    "title": "Find Maximum in Array",
+                    "description": "Find the largest number in an array",
+                    "code": "public class FindMax {\n    public static void main(String[] args) {\n        int[] scores = {85, 92, 78, 95, 88};\n        int max = scores[0];\n        \n        for (int i = 1; i < scores.length; i++) {\n            if (scores[i] > max) {\n                max = scores[i];\n            }\n        }\n        \n        System.out.println(\"Highest score: \" + max);\n    }\n}"
+                }
+            ],
+            "summary": "Arrays store multiple values of the same type. Use indexes to access elements, and loops to process all elements.",
+            "keyPoints": [
+                "Arrays have fixed size (cannot change after creation)",
+                "Index starts at 0, ends at length-1",
+                "Use .length to get array size",
+                "All elements must be the same type",
+                "Use loops to process array elements"
+            ],
+            "practiceExercise": {
+                "description": "Calculate average of array elements",
+                "task": "Create an array of 5 test scores. Calculate and print the average score.",
+                "hint": "Add all scores together, then divide by the number of scores",
+                "solution": "public class AverageScore {\n    public static void main(String[] args) {\n        int[] scores = {85, 90, 78, 92, 88};\n        int sum = 0;\n        \n        for (int i = 0; i < scores.length; i++) {\n            sum += scores[i];\n        }\n        \n        double average = (double) sum / scores.length;\n        System.out.println(\"Average score: \" + average);\n    }\n}"
+            }
+        }
+    ]
+}

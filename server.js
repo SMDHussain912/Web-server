@@ -1,309 +1,366 @@
 const express = require('express');
 const session = require('express-session');
-const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
 const { exec } = require('child_process');
 require('dotenv').config();
 
 const config = require('./config/config');
 const { initializeDatabase } = require('./config/database');
+const courseService = require('./services/courseService');
+const userService = require('./services/userService');
+const lessonService = require('./services/lessonService');
 
 // Import routes
 const authRoutes = require('./routes/auth');
-const dashboardRoutes = require('./routes/dashboard');
-const coursesRoutes = require('./routes/courses');
 const examRoutes = require('./routes/exam');
-const aiRoutes = require('./routes/ai');
-const profileRoutes = require('./routes/profile');
 const apiRoutes = require('./routes/api');
 
 const app = express();
 
-/* ================= DEBUG MODE ================= */
-
-let DEBUG = false;
-
-function checkJavaInstalled() {
-    return new Promise(resolve => {
-        exec("javac -version", (err, stdout, stderr) => {
-            if (err) {
-                console.log("❌ Java is NOT installed.");
-                console.log("Install it with:");
-                console.log("apt-get install -y openjdk-17");
-                resolve(false);
-            } else {
-                console.log("✅ Java detected:", stderr || stdout);
-                resolve(true);
-            }
-        });
-    });
-}
-
-async function askDebug() {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-
-    return new Promise(resolve => {
-        let answered = false;
-        const timer = setTimeout(() => {
-            if (!answered) {
-                rl.close();
-                resolve(false);
-            }
-        }, 5000);
-
-        rl.question("Enable debugging? (yes/no): ", answer => {
-            answered = true;
-            clearTimeout(timer);
-            const val = answer.trim().toLowerCase();
-            if (val === "yes" || val === "y") {
-                resolve(true);
-            } else {
-                resolve(false);
-            }
-            rl.close();
-        });
-    });
-}
-
-function log(...msg) {
-    if (DEBUG) {
-        console.log("[DEBUG]", ...msg);
-    }
-}
-
 /* ================= MIDDLEWARE ================= */
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(session(config.session));
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
+// Serve React build if available
+const clientBuildPath = path.join(__dirname, 'client/build');
+const fs = require('fs');
+if (fs.existsSync(clientBuildPath)) {
+    console.log('✅ Serving React frontend from build folder');
+    app.use(express.static(clientBuildPath));
+}
 
-// Make session available to all views
+// Make session available to all routes
 app.use((req, res, next) => {
     res.locals.userId = req.session.userId;
     next();
 });
 
-/* ================= LOAD COURSES ================= */
+/* ================= AUTH MIDDLEWARE ================= */
 
-const javaCourse = JSON.parse(
-    fs.readFileSync(path.join(__dirname, 'courses/java.json'), "utf8")
-);
+const authMiddleware = (req, res, next) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+    next();
+};
 
-/* ================= ROUTES ================= */
+/* ================= AUTH ROUTES ================= */
 
-// Public routes
-app.get("/", (req, res) => {
-    res.render("index");
-});
-
-app.get("/index", (req, res) => {
-    res.render("index");
-});
-
-// Auth routes
 app.use("/", authRoutes);
 
-// Dashboard routes
-app.use("/", dashboardRoutes);
+/* ================= USER API ================= */
 
-// Courses routes
-app.use("/", coursesRoutes);
+// Get current user
+app.get("/api/me", authMiddleware, async (req, res) => {
+    try {
+        const User = require('./models/User');
+        const user = await User.findById(req.session.userId);
+        res.json({
+            userId: user._id,
+            email: user.email,
+            name: user.name
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user' });
+    }
+});
 
-// Exam routes
-app.use("/", examRoutes);
+// Get user stats
+app.get("/api/stats", authMiddleware, async (req, res) => {
+    try {
+        const stats = await userService.getUserStats(req.session.userId);
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+});
 
-// AI routes
-app.use("/", aiRoutes);
+// Get user progress
+app.get("/api/progress", authMiddleware, async (req, res) => {
+    try {
+        const progress = await userService.getUserProgress(req.session.userId);
+        res.json(progress);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch progress' });
+    }
+});
 
-// Profile routes
-app.use("/", profileRoutes);
+// Update user profile
+app.post("/api/profile", authMiddleware, async (req, res) => {
+    try {
+        const User = require('./models/User');
+        const { name, bio, skills, interests } = req.body;
+        await User.findByIdAndUpdate(req.session.userId, {
+            name, bio,
+            skills: skills || [],
+            interests: interests || []
+        });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update profile' });
+    }
+});
 
-// API routes
-app.use("/api", apiRoutes);
+/* ================= COURSES API (Dynamic MongoDB System) ================= */
+
+// Get all courses with optional filters
+app.get("/api/courses", async (req, res) => {
+    try {
+        const { difficulty, category, search } = req.query;
+        const courses = await courseService.getCourses({ difficulty, category, search });
+        res.json({ courses });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to load courses' });
+    }
+});
+
+// Get single course with all lessons
+app.get("/api/courses/:courseId", async (req, res) => {
+    try {
+        const course = await courseService.getCourse(req.params.courseId);
+        if (!course) return res.status(404).json({ error: 'Course not found' });
+        res.json(course);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to load course' });
+    }
+});
+
+// Get specific lesson from a course
+app.get("/api/courses/:courseId/lesson/:lessonNumber", async (req, res) => {
+    try {
+        const lesson = await courseService.getLesson(req.params.courseId, req.params.lessonNumber);
+        if (!lesson) return res.status(404).json({ error: 'Lesson not found' });
+        res.json(lesson);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to load lesson' });
+    }
+});
+
+// Complete a lesson
+app.post("/api/courses/:courseId/lesson/:lessonNumber/complete", authMiddleware, async (req, res) => {
+    try {
+        await userService.saveLessonProgress(
+            req.session.userId, 
+            req.params.courseId, 
+            parseInt(req.params.lessonNumber)
+        );
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to save progress' });
+    }
+});
+
+// Create a new course
+app.post("/api/courses", authMiddleware, async (req, res) => {
+    try {
+        const course = await courseService.createCourse({
+            ...req.body,
+            author: req.session.userId
+        });
+        res.json({ success: true, course });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create course' });
+    }
+});
+
+// Add lesson to course
+app.post("/api/courses/:courseId/lessons", authMiddleware, async (req, res) => {
+    try {
+        const course = await courseService.addLesson(req.params.courseId, req.body);
+        res.json({ success: true, course });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add lesson' });
+    }
+});
+
+// Delete course
+app.delete("/api/courses/:courseId", authMiddleware, async (req, res) => {
+    try {
+        await courseService.deleteCourse(req.params.courseId);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete course' });
+    }
+});
+
+// Get user's courses with progress
+app.get("/api/my-courses", authMiddleware, async (req, res) => {
+    try {
+        const courses = await courseService.getUserCourses(req.session.userId);
+        res.json({ courses });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch courses' });
+    }
+});
+
+/* ================= AI LESSON GENERATOR ================= */
+
+app.post("/api/lessons/generate", authMiddleware, async (req, res) => {
+    try {
+        const { topic, difficulty } = req.body;
+        if (!topic) return res.status(400).json({ error: 'Topic is required' });
+        
+        const lesson = await lessonService.generateLesson(topic, difficulty || 'beginner');
+        res.json({ success: true, lesson });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to generate lesson' });
+    }
+});
+
+app.post("/api/lessons/syllabus", authMiddleware, async (req, res) => {
+    try {
+        const { courseName, totalLessons } = req.body;
+        if (!courseName) return res.status(400).json({ error: 'Course name is required' });
+        
+        const syllabus = await lessonService.generateCourseSyllabus(courseName, totalLessons || 10);
+        res.json({ success: true, syllabus });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to generate syllabus' });
+    }
+});
+
+app.post("/api/lessons/quiz", authMiddleware, async (req, res) => {
+    try {
+        const { topic, numQuestions } = req.body;
+        if (!topic) return res.status(400).json({ error: 'Topic is required' });
+        
+        const quiz = await lessonService.generateQuiz(topic, numQuestions || 10);
+        res.json({ success: true, quiz });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to generate quiz' });
+    }
+});
+
+/* ================= BOOKMARKS & NOTES ================= */
+
+app.get("/api/bookmarks", authMiddleware, async (req, res) => {
+    try {
+        const bookmarks = await userService.getBookmarks(req.session.userId);
+        res.json({ bookmarks });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch bookmarks' });
+    }
+});
+
+app.post("/api/bookmarks", authMiddleware, async (req, res) => {
+    try {
+        const { type, itemId, title } = req.body;
+        await userService.addBookmark(req.session.userId, type, itemId, title);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to add bookmark' });
+    }
+});
+
+app.delete("/api/bookmarks/:itemId", authMiddleware, async (req, res) => {
+    try {
+        await userService.removeBookmark(req.session.userId, req.params.itemId);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to remove bookmark' });
+    }
+});
+
+app.get("/api/notes", authMiddleware, async (req, res) => {
+    try {
+        const notes = await userService.getNotes(req.session.userId, req.query.courseId);
+        res.json({ notes });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch notes' });
+    }
+});
+
+app.post("/api/notes", authMiddleware, async (req, res) => {
+    try {
+        const { courseId, lessonId, content } = req.body;
+        await userService.saveNote(req.session.userId, courseId, lessonId, content);
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to save note' });
+    }
+});
+
+/* ================= ACHIEVEMENTS ================= */
+
+app.get("/api/achievements", authMiddleware, async (req, res) => {
+    try {
+        const Achievement = require('./models/Achievement');
+        const achievements = await Achievement.find({ userId: req.session.userId }).sort({ date: -1 });
+        res.json({ achievements });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch achievements' });
+    }
+});
 
 /* ================= CODE EXECUTION ================= */
 
-app.post("/runCode", async (req, res) => {
-    try {
-        const code = req.body.code;
-        const filename = req.body.filename || "Main.java";
-        const tempDir = path.join(__dirname, config.java.tempDir);
-
-        if (!fs.existsSync(tempDir)) {
-            fs.mkdirSync(tempDir);
+app.post("/api/runCode", async (req, res) => {
+    const { code, language } = req.body;
+    
+    if (language === 'javascript') {
+        try {
+            const result = eval(code);
+            res.json({ output: String(result) });
+        } catch (error) {
+            res.json({ output: error.message });
         }
+        return;
+    }
 
-        const filePath = path.join(tempDir, filename);
+    // Java execution
+    if (language === 'java') {
+        const tempDir = path.join(__dirname, config.java.tempDir);
+        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+        const filePath = path.join(tempDir, 'Main.java');
         fs.writeFileSync(filePath, code);
 
-        const className = filename.replace(".java", "");
-        const command = `cd ${tempDir} && javac ${filename} && java ${className}`;
+        exec(`javac -d ${tempDir} ${filePath} && java -cp ${tempDir} Main`, 
+            { timeout: config.java.timeout }, 
+            (error, stdout, stderr) => {
+                try {
+                    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+                    const classFile = path.join(tempDir, 'Main.class');
+                    if (fs.existsSync(classFile)) fs.unlinkSync(classFile);
+                } catch (e) {}
 
-        const child = exec(command, { timeout: config.java.timeout }, (error, stdout, stderr) => {
-            let output = "";
-
-            if (stderr) {
-                output = stderr;
-            } else if (stdout) {
-                output = stdout;
-            } else if (error) {
-                output = error.message;
-            } else {
-                output = "Program ran successfully but produced no output.";
-            }
-
-            try {
-                fs.unlinkSync(filePath);
-                const classFile = path.join(tempDir, `${className}.class`);
-                if (fs.existsSync(classFile)) {
-                    fs.unlinkSync(classFile);
-                }
-            } catch (e) { }
-
-            res.json({ output });
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.json({ output: "Execution failed" });
-    }
-});
-
-/* ================= CODE CHECKING ================= */
-
-app.post("/checkCode", async (req, res) => {
-    const { code, output, task } = req.body;
-
-    try {
-        const prompt = `
-You are a beginner friendly programming teacher.
-
-Task:
-${task}
-
-Student Code:
-${code}
-
-Program Output:
-${output}
-
-Check if the solution solves the task.
-
-Rules:
-- respond under 3 sentences
-- start with Correct or Incorrect
-- ignore formatting mistakes
-- focus on logic and output
-`;
-
-        const response = await fetch(
-            config.ai.baseUrl,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${config.ai.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: config.ai.model,
-                    messages: [{ role: "user", content: prompt }]
-                })
+                if (stderr) return res.json({ output: stderr });
+                if (stdout) return res.json({ output: stdout });
+                if (error) return res.json({ output: error.message });
+                res.json({ output: 'Program ran successfully (no output)' });
             }
         );
-
-        const data = await response.json();
-        log("AI checkCode response:", data);
-
-        if (!data.choices) {
-            return res.json({ feedback: "AI response error" });
-        }
-
-        res.json({
-            feedback: data.choices[0].message.content
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.json({
-            feedback: "AI check failed"
-        });
+        return;
     }
+
+    res.json({ output: 'Language not supported' });
 });
 
-app.post("/checkExercise", async (req, res) => {
-    const { questions, answers } = req.body;
+/* ================= HEALTH CHECK ================= */
 
-    try {
-        const prompt = `
-You are a beginner programming teacher.
-
-Questions:
-${JSON.stringify(questions)}
-
-Student Answers:
-${JSON.stringify(answers)}
-
-Check if answers show correct understanding.
-
-Rules:
-- If mostly correct respond PASSED
-- Otherwise explain briefly
-- Maximum 3 sentences
-`;
-
-        const response = await fetch(
-            config.ai.baseUrl,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${config.ai.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: config.ai.model,
-                    messages: [{ role: "user", content: prompt }]
-                })
-            }
-        );
-
-        const data = await response.json();
-        log("Exercise check response:", data);
-
-        const feedback = data.choices[0].message.content;
-
-        res.json({
-            feedback,
-            passed: feedback.toLowerCase().includes("passed")
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.json({
-            feedback: "Exercise check failed",
-            passed: false
-        });
-    }
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'OK', 
+        timestamp: new Date().toISOString(),
+        version: '2.0.0'
+    });
 });
 
-/* ================= SITEMAP ================= */
+/* ================= SPA FALLBACK ================= */
 
-app.get('/sitemap.xml', (req, res) => {
-    res.type('application/xml');
-    res.send(`<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <url>
-            <loc>https://careernavigator-cq9v.onrender.com/</loc>
-            <lastmod>2026-03-04</lastmod>
-        </url>
-    </urlset>`);
+// Serve React for all other routes (SPA support)
+app.use((req, res) => {
+    if (fs.existsSync(clientBuildPath)) {
+        res.sendFile(path.join(clientBuildPath, 'index.html'));
+    } else {
+        res.json({ 
+            message: '🚀 Career Navigator API',
+            version: '2.0.0',
+            note: 'React frontend not built. Run: cd client && npm install && npm run build'
+        });
+    }
 });
 
 /* ================= SERVER START ================= */
@@ -311,23 +368,17 @@ app.get('/sitemap.xml', (req, res) => {
 const PORT = config.port;
 
 (async () => {
-    DEBUG = await askDebug();
-    console.log("Debug mode:", DEBUG ? "ON" : "OFF");
-
     // Initialize MongoDB
     await initializeDatabase(config.mongodb.uri);
-
-    const javaOk = await checkJavaInstalled();
-
-    if (!javaOk) {
-        console.log("⚠ Java is not installed. Code execution features will be disabled.");
-        console.log("  Install Java JDK 17+ to enable code execution.");
-        console.log("  Windows: Download from https://www.oracle.com/java/technologies/downloads/");
-        console.log("  Or use: winget install Oracle.JDK.17");
-    }
+    
+    // Auto-seed courses from JSON to MongoDB
+    await courseService.seedCoursesFromJSON();
 
     app.listen(PORT, () => {
-        console.log("🚀 Server running on port", PORT);
-        console.log("📱 Open http://localhost:" + PORT + " in your browser");
+        console.log('='.repeat(50));
+        console.log(`🚀 Career Navigator v2.0.0`);
+        console.log(`📡 Server running on http://localhost:${PORT}`);
+        console.log(`📚 MongoDB: ${config.mongodb.uri}`);
+        console.log('='.repeat(50));
     });
 })();
