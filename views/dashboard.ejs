@@ -1,186 +1,375 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Career Navigator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
 
-body{
-margin:0;
-font-family:Arial;
-background:
-linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-url("page 3.jpg") no-repeat center center fixed;
-background-size:cover;
-color:white;
-}
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 40px;
-background:rgba(0,0,0,0.6);
-backdrop-filter:blur(10px);
-}
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-header h1{
-margin:0;
-}
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-.logout{
-background:#ff4d4d;
-border:none;
-padding:10px 20px;
-border-radius:8px;
-cursor:pointer;
-color:white;
-font-size:16px;
-}
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
 
-.container{
-padding:40px;
-}
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-.welcome{
-font-size:28px;
-margin-bottom:30px;
-}
+        .logout-btn {
+            background: #ff4757;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:25px;
-}
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
 
-.card{
-background:rgba(255,255,255,0.1);
-padding:30px;
-border-radius:20px;
-backdrop-filter:blur(10px);
-text-align:center;
-transition:0.3s;
-}
+        /* Container */
+        .container {
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-.card:hover{
-transform:translateY(-5px);
-background:rgba(255,255,255,0.2);
-}
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s;
+        }
 
-.card h2{
-margin-bottom:15px;
-}
+        .welcome-section h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-.card button{
-padding:10px 20px;
-border:none;
-border-radius:8px;
-background:#007bff;
-color:white;
-cursor:pointer;
-}
+        .welcome-section p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
 
-footer{
-text-align:center;
-padding:20px;
-margin-top:40px;
-background:rgba(0,0,0,0.6);
-}
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
 
-</style>
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s, background 0.3s;
+            animation: fadeInUp 0.8s;
+        }
 
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .stat-card i {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            margin: 10px 0;
+        }
+
+        .stat-card p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            animation: fadeInUp 1s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .feature-card button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .feature-card button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .welcome-section h1 {
+                font-size: 32px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Career Navigator
+        </div>
+        <nav class="nav-links">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/courses"><i class="fas fa-book"></i> Courses</a>
+            <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </nav>
+    </header>
 
-<header>
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome Back! 👋</h1>
+            <p>Continue your learning journey</p>
+        </div>
 
-<h1>Career Navigator</h1>
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-book-open" style="color: #ffd93d;"></i>
+                <h3><%= stats.lessonsCompleted || 0 %></h3>
+                <p>Lessons Completed</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-fire" style="color: #ff6b6b;"></i>
+                <h3><%= stats.streak || 0 %> Days</h3>
+                <p>Learning Streak</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clipboard-check" style="color: #4ecdc4;"></i>
+                <h3><%= stats.examsTaken || 0 %></h3>
+                <p>Exams Taken</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-trophy" style="color: #ffd93d;"></i>
+                <h3><%= stats.averageScore || 0 %>%</h3>
+                <p>Average Score</p>
+            </div>
+        </div>
 
-<button class="logout" onclick="logout()">Logout</button>
+        <!-- Features -->
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-robot" style="color: #667eea;"></i>
+                <h2>AI Career Recommendations</h2>
+                <p>Get personalized career paths based on your skills and interests</p>
+                <button onclick="goToInfo()">Explore Careers</button>
+            </div>
 
-</header>
+            <div class="feature-card">
+                <i class="fas fa-laptop-code" style="color: #4ecdc4;"></i>
+                <h2>AI Courses</h2>
+                <p>Learn programming with AI-guided interactive lessons</p>
+                <button onclick="goToCourses()">Start Learning</button>
+            </div>
 
-<div class="container">
+            <div class="feature-card">
+                <i class="fas fa-pen-to-square" style="color: #ff6b6b;"></i>
+                <h2>Practice & Exams</h2>
+                <p>Test your knowledge with AI-generated exams</p>
+                <button onclick="goToExam()">Take Exam</button>
+            </div>
 
-<div class="welcome">
-Welcome to your Dashboard 🚀
-</div>
+            <div class="feature-card">
+                <i class="fas fa-user-circle" style="color: #ffd93d;"></i>
+                <h2>Your Profile</h2>
+                <p>View your achievements, bookmarks, and progress</p>
+                <button onclick="goToProfile()">View Profile</button>
+            </div>
 
-<div class="grid">
+            <div class="feature-card">
+                <i class="fas fa-chart-line" style="color: #95e1d3;"></i>
+                <h2>Exam Results</h2>
+                <p>Check your previous exam scores and performance</p>
+                <button onclick="goToResults()">View Results</button>
+            </div>
 
-<div class="card">
-<h2>AI Career Recommendation</h2>
-<p>Find the best career path based on your skills.</p>
-<button onclick="goCareer()">Open</button>
-</div>
+            <div class="feature-card">
+                <i class="fas fa-medal" style="color: #f38181;"></i>
+                <h2>Achievements</h2>
+                <p>View your badges and milestones</p>
+                <button onclick="goToAchievements()">View Achievements</button>
+            </div>
+        </div>
+    </div>
 
-<div class="card">
-<h2>AI Courses</h2>
-<p>Learn new skills with AI guided lessons.</p>
-<button onclick="goCourses()">Open</button>
-</div>
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
 
-<div class="card">
-<h2>Practice & Exams</h2>
-<p>Test your knowledge with exercises.</p>
-<button onclick="goExam()">Open</button>
-</div>
+    <script>
+        function logout() {
+            fetch('/logout')
+                .then(() => {
+                    window.location = '/login';
+                });
+        }
 
-<div class="card">
-<h2>Your Profile</h2>
-<p>View your account and progress.</p>
-<button onclick="goProfile()">Open</button>
-</div>
+        function goToInfo() {
+            window.location = '/info';
+        }
 
-<div class="card">
-<h2>Exam Results</h2>
-<p>Check your previous exam scores.</p>
-<button onclick="goResults()">Open</button>
-</div>
+        function goToCourses() {
+            window.location = '/courses';
+        }
 
-</div>
+        function goToExam() {
+            window.location = '/exam';
+        }
 
-</div>
+        function goToProfile() {
+            window.location = '/profile';
+        }
 
-<footer>
-Career Navigator AI System
-</footer>
+        function goToResults() {
+            window.location = '/results';
+        }
 
-
-<script>
-
-function logout(){
-
-fetch("/logout")
-.then(()=>{
-window.location="/login";
-});
-
-}
-
-function goCareer(){
-window.location="/info";
-}
-
-function goCourses(){
-window.location="/courses";
-}
-
-function goExam(){
-window.location="/exam";
-}
-
-function goProfile(){
-window.location="/profile";
-}
-
-function goResults(){
-window.location="/results";
-}
-
-</script>
-
+        function goToAchievements() {
+            window.location = '/achievements';
+        }
+    </script>
 </body>
 </html>

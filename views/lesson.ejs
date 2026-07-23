@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lesson - Career Navigator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .lesson-header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s;
+        }
+
+        .lesson-header h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .lesson-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .lesson-content h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #ffd93d;
+        }
+
+        .lesson-content h3 {
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content p {
+            margin-bottom: 15px;
+        }
+
+        .lesson-content pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .lesson-content code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .lesson-content ul, .lesson-content ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .lesson-content li {
+            margin-bottom: 10px;
+        }
+
+        .code-editor {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s;
+        }
+
+        .code-editor h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            min-height: 300px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .code-editor textarea:focus {
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .output.active {
+            display: block;
+        }
+
+        .output-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd93d;
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .lesson-nav button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lesson-nav button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .lesson-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .lesson-header h1 {
+                font-size: 32px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .lesson-nav {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Career Navigator
+        </div>
+        <nav class="nav-links">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/course/java"><i class="fas fa-book"></i> Course</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="lesson-header">
+            <h1>Lesson <%= lessonNumber %>: <%= lesson.title %></h1>
+            <p>Learn at your own pace • <%= totalLessons %> total lessons</p>
+        </div>
+
+        <div class="lesson-content">
+            <%- lesson.content %>
+        </div>
+
+        <% if (lesson.code_example) { %>
+        <div class="code-editor">
+            <h3><i class="fas fa-code"></i> Try It Yourself</h3>
+            <textarea id="codeEditor" placeholder="Write your code here..."><%= lesson.code_example || '' %></textarea>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="runCode()">
+                    <i class="fas fa-play"></i> Run Code
+                </button>
+                <button class="btn btn-secondary" onclick="checkCode()">
+                    <i class="fas fa-check"></i> Check Solution
+                </button>
+            </div>
+            <div class="output" id="output">
+                <div class="output-label">Output:</div>
+                <div id="outputText"></div>
+            </div>
+        </div>
+        <% } %>
+
+        <div class="lesson-nav">
+            <button onclick="navigateLesson(<%= lessonNumber - 1 %>)" 
+                    <%= lessonNumber === 1 ? 'disabled' : '' %>>
+                <i class="fas fa-arrow-left"></i> Previous Lesson
+            </button>
+            <button onclick="completeAndNext()">
+                Complete & Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const currentLesson = parseInt('<%= lessonNumber %>');
+        const courseId = '<%= courseId %>';
+        const totalLessons = parseInt('<%= totalLessons %>');
+
+        async function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputDiv = document.getElementById('output');
+            const outputText = document.getElementById('outputText');
+
+            outputDiv.classList.add('active');
+            outputText.textContent = 'Running...';
+
+            try {
+                const response = await fetch('/runCode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        code: code,
+                        filename: 'Main.java'
+                    })
+                });
+
+                const data = await response.json();
+                outputText.textContent = data.output || 'No output';
+            } catch (error) {
+                outputText.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function checkCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputDiv = document.getElementById('output');
+            const outputText = document.getElementById('outputText');
+
+            outputDiv.classList.add('active');
+            outputText.textContent = 'Checking...';
+
+            try {
+                const response = await fetch('/checkCode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        output: outputText.textContent,
+                        task: '<%= lesson.title %>'
+                    })
+                });
+
+                const data = await response.json();
+                outputText.textContent = data.feedback;
+            } catch (error) {
+                outputText.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        async function completeAndNext() {
+            try {
+                await fetch('/completeLesson', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        course: courseId,
+                        lesson: currentLesson
+                    })
+                });
+
+                // Navigate to next lesson
+                if (currentLesson < totalLessons) {
+                    window.location = '/course/' + courseId + '/lesson/' + (currentLesson + 1);
+                } else {
+                    alert('Congratulations! You have completed the course!');
+                    window.location = '/dashboard';
+                }
+            } catch (error) {
+                alert('Failed to save progress');
+            }
+        }
+
+        function navigateLesson(lessonNum) {
+            if (lessonNum >= 1) {
+                window.location = '/course/' + courseId + '/lesson/' + lessonNum;
+            }
+        }
+    </script>
+</body>
+</html>

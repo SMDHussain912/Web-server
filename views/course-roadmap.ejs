@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Java Course - Career Navigator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .course-header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s;
+        }
+
+        .course-header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .course-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ffd93d 0%, #ff6b6b 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .lesson-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.8s;
+            border-left: 5px solid transparent;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .lesson-card.completed {
+            border-left-color: #28a745;
+        }
+
+        .lesson-card.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .lesson-card.current {
+            border-left-color: #ffd93d;
+            box-shadow: 0 5px 20px rgba(255, 217, 61, 0.3);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .lesson-number {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .lesson-status {
+            font-size: 24px;
+        }
+
+        .lesson-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .lesson-card p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 15px;
+        }
+
+        .lesson-card button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .lesson-card button:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .lesson-card button:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .course-header h1 {
+                font-size: 32px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Career Navigator
+        </div>
+        <nav class="nav-links">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/courses"><i class="fas fa-book"></i> Courses</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="course-header">
+            <h1>☕ Java with OOPs</h1>
+            <p>Master Java programming from basics to advanced concepts</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: <%= Math.round((completed / totalLessons) * 100) %>%;">
+                <%= completed %> / <%= totalLessons %> Lessons
+            </div>
+        </div>
+
+        <!-- Lessons Grid -->
+        <div class="lessons-grid">
+            <% lessons.forEach(lesson => { %>
+                <div class="lesson-card <%= lesson.completed ? 'completed' : '' %> <%= lesson.locked ? 'locked' : '' %>">
+                    <div class="lesson-header">
+                        <span class="lesson-number">Lesson <%= lesson.number %></span>
+                        <span class="lesson-status">
+                            <% if (lesson.completed) { %>
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            <% } else if (lesson.locked) { %>
+                                <i class="fas fa-lock" style="color: rgba(255,255,255,0.3);"></i>
+                            <% } else { %>
+                                <i class="fas fa-play-circle" style="color: #ffd93d;"></i>
+                            <% } %>
+                        </span>
+                    </div>
+                    <h3><%= lesson.title %></h3>
+                    <p>Learn and practice <%= lesson.title.toLowerCase() %></p>
+                    <button onclick="openLesson(<%= lesson.number %>)" 
+                        <%= lesson.locked ? 'disabled' : '' %>>
+                        <%= lesson.completed ? 'Review' : (lesson.locked ? 'Locked' : 'Start') %>
+                    </button>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function openLesson(lessonNumber) {
+            window.location = `/course/java/lesson/${lessonNumber}`;
+        }
+    </script>
+</body>
+</html>

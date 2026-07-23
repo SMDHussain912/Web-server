@@ -1,85 +1,278 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Your Exam Results</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results - Career Navigator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
 
-body{
-margin:0;
-font-family:Arial;
-background:#111;
-color:white;
-}
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-.container{
-padding:40px;
-}
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-table{
-width:100%;
-border-collapse:collapse;
-}
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #444;
-text-align:left;
-}
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
 
-button{
-padding:10px 20px;
-background:#007bff;
-border:none;
-color:white;
-border-radius:6px;
-cursor:pointer;
-}
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-</style>
+        .container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s;
+        }
+
+        .page-header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            animation: fadeInUp 0.8s;
+            border-left: 5px solid #ffd93d;
+        }
+
+        .result-card:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .result-info h3 {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .result-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .result-score {
+            text-align: center;
+            padding: 15px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .result-score .score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .result-score .label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+        }
+
+        .empty-state i {
+            font-size: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .empty-state a:hover {
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .result-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
-
 <body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Career Navigator
+        </div>
+        <nav class="nav-links">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/exam"><i class="fas fa-pen"></i> Take Exam</a>
+        </nav>
+    </header>
 
-<div class="container">
+    <div class="container">
+        <div class="page-header">
+            <h1>📊 Your Exam Results</h1>
+            <p>Track your performance and progress</p>
+        </div>
 
-<h1>Your Exam Results</h1>
+        <% if (results && results.length > 0) { %>
+            <div class="results-list">
+                <% results.forEach(result => { %>
+                    <div class="result-card">
+                        <div class="result-info">
+                            <h3><%= result.topic %></h3>
+                            <p><%= new Date(result.date.seconds * 1000).toLocaleDateString() %></p>
+                        </div>
+                        <div class="result-score">
+                            <div class="score"><%= result.score %>%</div>
+                            <div class="label">Score</div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list"></i>
+                <h2>No Exam Results Yet</h2>
+                <p>Take your first exam to see your results here!</p>
+                <a href="/exam">Take an Exam</a>
+            </div>
+        <% } %>
+    </div>
 
-<table>
-
-<tr>
-<th>Topic</th>
-<th>Score</th>
-<th>Date</th>
-</tr>
-
-<% results.forEach(r=>{ %>
-
-<tr>
-<td><%= r.topic %></td>
-<td><%= r.score %></td>
-<td><%= new Date(r.date._seconds*1000).toLocaleDateString() %></td>
-</tr>
-
-<% }) %>
-
-</table>
-
-<br>
-
-<button onclick="goDashboard()">Back</button>
-
-</div>
-
-<script>
-
-function goDashboard(){
-window.location="/dashboard";
-}
-
-</script>
-
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
 </body>
 </html>

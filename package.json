@@ -1,21 +1,25 @@
 {
   "name": "careerrecommendation",
-  "version": "1.0.0",
-  "description": "This i simole career recommendation website help to freshers",
+  "version": "2.0.0",
+  "description": "AI-powered career recommendation and learning platform with MongoDB",
   "license": "ISC",
-  "author": "",
+  "author": "Shaik Mahammad Hussain",
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^2.2.2",
     "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
-    "firebase-admin": "^13.7.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.1",
     "node-fetch": "^2.7.0"
   }
 }

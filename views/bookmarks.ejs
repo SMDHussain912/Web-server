@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bookmarks - Career Navigator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s;
+        }
+
+        .page-header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .bookmarks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .bookmark-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.8s;
+            border-left: 5px solid #ffd93d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bookmark-card:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .bookmark-info {
+            flex: 1;
+        }
+
+        .bookmark-info h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: #ffd93d;
+        }
+
+        .bookmark-info p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .bookmark-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b6b 100%);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+        }
+
+        .empty-state i {
+            font-size: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .page-header h1 {
+                font-size: 32px;
+            }
+
+            .bookmark-card {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-graduation-cap"></i>
+            Career Navigator
+        </div>
+        <nav class="nav-links">
+            <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+            <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>🔖 Your Bookmarks</h1>
+            <p>Quick access to your saved courses and lessons</p>
+        </div>
+
+        <% if (bookmarks && bookmarks.length > 0) { %>
+            <div class="bookmarks-list">
+                <% bookmarks.forEach(bookmark => { %>
+                    <div class="bookmark-card">
+                        <div class="bookmark-info">
+                            <h3><%= bookmark.title %></h3>
+                            <p>Type: <%= bookmark.type %> • Saved on <%= new Date(bookmark.date.seconds * 1000).toLocaleDateString() %></p>
+                        </div>
+                        <div class="bookmark-actions">
+                            <button class="btn btn-danger" onclick="removeBookmark('<%= bookmark.itemId %>')">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <i class="fas fa-bookmark"></i>
+                <h2>No Bookmarks Yet</h2>
+                <p>Start bookmarking courses and lessons to access them quickly!</p>
+            </div>
+        <% } %>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function removeBookmark(itemId) {
+            if (!confirm('Are you sure you want to remove this bookmark?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/bookmarks/' + itemId, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    location.reload();
+                }
+            } catch (error) {
+                alert('Failed to remove bookmark');
+            }
+        }
+    </script>
+</body>
+</html>

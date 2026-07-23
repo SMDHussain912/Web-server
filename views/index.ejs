@@ -1,53 +1,296 @@
 <!DOCTYPE html>
-<html>  
-<head>  
+<html>
+<head>
+    <title>Career Navigator - AI-Powered Learning Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google-site-verification" content="Y01HFfWeuTAGVAxko3E2vpLQaYo4hlvidJlIJG9tv04" />
-    <title>AI Career Recommendation System | Career Navigator</title>
-<meta name="description" content="AI powered career recommendation system that helps students find the best career path based on interests and skills.">
-    <style>  
-        body{  
-            font-family: Arial;  
-           background: url("page 1.jpg") no-repeat center center fixed; 
-background-size: cover;
-          color: white;  
-        text-align: center;  
-    
-    }
+    <meta name="description" content="AI-powered career recommendation and learning platform">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.box {
-text-align: center;
-position: relative;
-margin-top: 10px;
-}
-p{
-font-size: 60px;
-font-weight: bold;
-}
-.btn{
-margin-top: 560px;
-}
-button{
-background: deepskyblue;
-color: white;
-padding: 15px;
-height: 70px;
-width: 160px;
-font-size: 30px;
-border-radius: 80px;
-  border: none;
-cursor: pointer;
-}
-</style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
 
-</head>  
-<body>  
-  <div class="box">  
-<p>Welcome to Career Recommendation System</p>  
-<br>  
-  </div>  
-  <div class="btn">  
-<button onclick="location.href='info'">Start</button>  
-  </div>  
-</body>  
-</html>   
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .hero-content {
+            animation: fadeInUp 1s;
+            max-width: 800px;
+        }
+
+        .hero-icon {
+            font-size: 100px;
+            margin-bottom: 30px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 18px 50px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            animation: fadeInUp 0.8s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card i {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 20px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-item i {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item h3 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 40px;
+            }
+
+            .hero p {
+                font-size: 18px;
+            }
+
+            .features h2 {
+                font-size: 32px;
+            }
+
+            .hero-icon {
+                font-size: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-icon">🚀</div>
+            <h1>Welcome to Career Navigator</h1>
+            <p>Your AI-Powered Learning Platform for Career Success</p>
+            <a href="/info" class="cta-button">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>What We Offer</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-robot" style="color: #ffd93d;"></i>
+                <h3>AI Career Recommendations</h3>
+                <p>Get personalized career paths based on your skills, interests, and education level</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-laptop-code" style="color: #4ecdc4;"></i>
+                <h3>Interactive Courses</h3>
+                <p>Learn programming with hands-on lessons and real-time code execution</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-pen-to-square" style="color: #ff6b6b;"></i>
+                <h3>Practice Exams</h3>
+                <p>Test your knowledge with AI-generated exams and get instant feedback</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-chart-line" style="color: #95e1d3;"></i>
+                <h3>Track Progress</h3>
+                <p>Monitor your learning journey with detailed analytics and achievements</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-code" style="color: #667eea;"></i>
+                <h3>Code Editor</h3>
+                <p>Practice coding directly in your browser with our built-in Java compiler</p>
+            </div>
+
+            <div class="feature-card">
+                <i class="fas fa-trophy" style="color: #ffd93d;"></i>
+                <h3>Achievements</h3>
+                <p>Earn badges and milestones as you progress through your learning journey</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <i class="fas fa-book-open" style="color: #ffd93d;"></i>
+                <h3>50+</h3>
+                <p>Lessons Available</p>
+            </div>
+
+            <div class="stat-item">
+                <i class="fas fa-users" style="color: #4ecdc4;"></i>
+                <h3>1000+</h3>
+                <p>Active Learners</p>
+            </div>
+
+            <div class="stat-item">
+                <i class="fas fa-star" style="color: #ff6b6b;"></i>
+                <h3>4.8</h3>
+                <p>Average Rating</p>
+            </div>
+
+            <div class="stat-item">
+                <i class="fas fa-award" style="color: #95e1d3;"></i>
+                <h3>100+</h3>
+                <p>Achievements</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Career Navigator AI System. All rights reserved.</p>
+    </footer>
+</body>
+</html>
