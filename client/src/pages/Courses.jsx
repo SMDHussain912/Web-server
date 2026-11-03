@@ -117,7 +117,7 @@ const Courses = () => {
             {filteredCourses.map((course) => (
               <Link
                 key={course._id || course.courseId}
-                to={`/courses/${course.courseId}`}
+                to={`/course/${course.courseId}`}
                 className="card group hover:border-blue-500/50 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-4">

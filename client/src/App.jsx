@@ -5,8 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Courses from './pages/Courses';
 import CourseDetail from "./pages/CourseDetail";
-import CourseDetail from './pages/CourseDetail';
-import LessonViewer from './pages/LessonViewer';
+import LessonViewer from "./pages/LessonViewer";
 import Exam from './pages/Exam';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
@@ -31,7 +30,6 @@ function App() {
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
         <Route path="/course/:courseId" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
-<Route path="/course/:courseId" element={<ProtectedRoute><CourseDetail /></ProtectedRoute>} />
         <Route path="/lesson/:lessonId" element={<ProtectedRoute><LessonViewer /></ProtectedRoute>} />
         <Route path="/exam" element={<ProtectedRoute><Exam /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
