@@ -116,7 +116,7 @@ const CourseDetail = () => {
             <h3 className="text-lg font-bold text-white mb-3">{selectedLesson.title}</h3>
             <p className="text-gray-400 text-sm">{selectedLesson.description}</p>
           </div>
-        )}
+        )
 
         {!selectedLesson && (
           <div>

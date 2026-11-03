@@ -1,148 +1,203 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, PenTool, TrendingUp, Award, Clock, Target } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { BookOpen, PenTool, TrendingUp, Award, Clock, Target, User, Mail } from 'lucide-react';
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    lessonsCompleted: 0,
-    examsTaken: 0,
-    averageScore: 0,
-    streak: 0,
-    totalScore: 0
-  });
+  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      const response = await fetch('/api/stats');
-      if (response.ok) {
-        const data = await response.json();
+    fetch('/api/stats')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed');
+        return res.json();
+      })
+      .then(data => {
         setStats(data);
-      }
+        return fetch('/api/achievements');
+      })
+      .then(res => res.json())
+      .then(data => setAchievements(data))
+      .catch(() => setAchievements([]));
     } catch (error) {
       console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
     }
-  };
+    finally {
+      setLoading(false);
+    };
+  }, []);
 
   if (loading) {
-    return (
-      <div className="page flex items-center justify-center">
-        <div className="spinner"></div>
-      </div>
-    );
+    return <div className="min-h-screen flex items-center justify-center bg-slate-900 p-6"><div className="spinner"></div></div>;
   }
 
+  if (!user) {
+    return <div className="min-h-screen flex items-center justify-center bg-slate-900 p-6"><p className="text-gray-400">Please log in to view your dashboard.</p></div>;
+  }
+
+  const totalLessons = stats?.lessonsCompleted || 0;
+  const totalExams = stats?.examsTaken || 0;
+  const avgScore = stats?.averageScore || 0;
+  const streak = stats?.streak || 0;
+  const totalScore = stats?.totalScore || 0;
+
   return (
-    <div className="page">
-      <div className="container mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-400 mb-8">Welcome back! Here's your learning progress.</p>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-500/20 rounded-lg">
-                <BookOpen className="w-8 h-8 text-blue-400" />
+    <div className="min-h-screen bg-slate-900">
+      <nav className="bg-slate-800/90 backdrop-blur-sm border-b border-slate-700/30 sticky top-0 z-10 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button size="sm" onClick="window.location.href='/dashboard'">Home</Button>
+            {user?.name && (
+              <div className="flex items-center gap-2">
+                <User className="w-6 h-6 rounded-full bg-slate-600 text-white flex items-center justify-center text-xs">{user.name?.charAt(0)}</span>
+                <span className="text-sm text-slate-300">{user.name || 'User'}</span>
               </div>
-              <div>
-                <p className="text-gray-400 text-sm">Lessons Completed</p>
-                <p className="text-3xl font-bold text-white">{stats.lessonsCompleted}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-500/20 rounded-lg">
-                <PenTool className="w-8 h-8 text-green-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm">Exams Taken</p>
-                <p className="text-3xl font-bold text-white">{stats.examsTaken}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-purple-500/20 rounded-lg">
-                <TrendingUp className="w-8 h-8 text-purple-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm">Average Score</p>
-                <p className="text-3xl font-bold text-white">{stats.averageScore}%</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-orange-500/20 rounded-lg">
-                <Clock className="w-8 h-8 text-orange-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm">Learning Streak</p>
-                <p className="text-3xl font-bold text-white">{stats.streak} days</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-yellow-500/20 rounded-lg">
-                <Award className="w-8 h-8 text-yellow-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm">Total Score</p>
-                <p className="text-3xl font-bold text-white">{stats.totalScore}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-pink-500/20 rounded-lg">
-                <Target className="w-8 h-8 text-pink-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm">Achievements</p>
-                <p className="text-3xl font-bold text-white">0</p>
-              </div>
-            </div>
+            )
+            }
+            <Button size="sm" onClick="logout()">Logout</Button>
           </div>
         </div>
+      </nav>
 
-        {/* Quick Actions */}
-        <h2 className="text-2xl font-bold text-white mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Link to="/courses" className="card hover:border-blue-500/50 cursor-pointer">
-            <BookOpen className="w-12 h-12 text-blue-400 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Continue Learning</h3>
-            <p className="text-gray-400">Pick up where you left off</p>
+      <main className="max-w-7xl mx-auto p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardHeader>
+              <CardIcon>
+                <BookOpen className="w-5 h-5 text-blue-400" />
+              </CardIcon>
+              <h3 className="text-xs font-medium text-slate-400">Lessons Completed</h3>
+            </CardHeader>
+            <CardBody>
+              <StatNumber>{totalLessons}</StatNumber>
+              <p className="text-xs text-slate-400">Lessons</p>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardIcon>
+                <PenTool className="w-5 h-5 text-green-400" />
+              </CardIcon>
+              <h3 className="text-xs font-medium text-slate-400">Exams Taken</h3>
+            </CardHeader>
+            <CardBody>
+              <StatNumber>{totalExams}</StatNumber>
+              <p className="text-xs text-slate-400">Exams</p>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardIcon>
+                <TrendingUp className="w-5 h-5 text-purple-400" />
+              </CardHeader>
+              <CardBody>
+                <StatNumber>{avgScore}%</StatNumber>
+                <p className="text-xs text-slate-400">Average</p>
+              </CardBody>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardIcon>
+                <Clock className="w-5 h-5 text-orange-400" />
+              </CardHeader>
+              <CardBody>
+                <StatNumber>{streak}</StatNumber>
+                <p className="text-xs text-slate-400">days</p>
+              </CardBody>
+            </CardBody>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardIcon>
+                <Star className="w-5 h-5 text-yellow-400" />
+              </CardHeader>
+              <CardBody>
+                <StatNumber>{totalScore}</StatNumber>
+                <p className="text-xs text-slate-400">points</p>
+              </CardBody>
+            </CardBody>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          {achievements.length > 0 ? (
+            achievements.map((achievement) => (
+              <div key={achievement.id} className="card p-4 text-center">
+                <div className="text-4xl mb-2">{achievement.icon}</div>
+                <h3 className="font-medium text-white">{achievement.title}</h3>
+                <p className="text-sm text-slate-300">{achievement.description}</p>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-8">
+              <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-medium text-gray-300">No Achievements Yet</h3>
+              <p className="text-sm text-slate-400">Earn badges by completing lessons and exams.</p>
+            </div>
+          )
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <Link to="/courses" className="ActionCard">
+            <ActionIcon>
+              <BookOpen className="w-5 h-5 text-blue-400" />
+            </ActionIcon>
+            <h3 className="text-sm font-medium text-white mb-1">Continue Learning</h3>
+            <p className="text-xs text-slate-300">Pick up where you left off</p>
           </Link>
-
-          <Link to="/exam" className="card hover:border-green-500/50 cursor-pointer">
-            <PenTool className="w-12 h-12 text-green-400 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Take an Exam</h3>
-            <p className="text-gray-400">Test your knowledge</p>
+          <Link to="/exam" className="ActionCard">
+            <ActionIcon>
+              <PenTool className="w-5 h-5 text-green-400" />
+            </ActionIcon>
+            <h3 className="text-sm font-medium text-white mb-1">Take an Exam</h3>
+            <p className="text-xs text-slate-300">Test your knowledge</p>
           </Link>
-
-          <Link to="/courses" className="card hover:border-purple-500/50 cursor-pointer">
-            <TrendingUp className="w-12 h-12 text-purple-400 mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">Explore Courses</h3>
-            <p className="text-gray-400">Discover new topics</p>
+          <Link to="/achievements" className="ActionCard">
+            <ActionIcon>
+              <Star className="w-5 h-5 text-yellow-400" />
+            </ActionIcon>
+            <h3 className="text-sm font-medium text-white mb-1">Achievements</h3>
+            <p className="text-xs text-slate-300">View earned badges</p>
           </Link>
         </div>
-      </div>
+
+        <div className="mt-8">
+          <h2 className="text-lg font-medium text-white">Recent Activity</h2>
+          {/* Activity items would go here if supported by backend */}
+        </div>
+      </main>
     </div>
   );
-};
+}
 
-export default Dashboard;
+function logout() {
+  fetch('/logout').then(() => window.location.href='/login');
+}
+
+function Card({ children }) {
+  return <div className="card p-6">{children}</div>;
+}
+
+function CardHeader({ children }) {
+  return <div className="mb-4">{children}</div>;
+}
+
+function CardBody({ children }) {
+  return <div className="pb-4">{children}</div>;
+}
+
+function StatNumber({ children }) {
+  return <p className="text-3xl font-bold text-white">{children}</p>;
+}
+
+function ActionIcon({ children }) {
+  return <div className="w-5 h-5">{children}</div>;
+}
+
+function ActionCard({ children }) {
+  return <div className="card hover:border-blue-500/50 p-4 cursor-pointer transition">{children}</div>;
+}
