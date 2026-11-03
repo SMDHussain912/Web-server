@@ -1,90 +1,141 @@
-# Career Navigator
+<p align="center">
+  <h1 align="center">Career Navigator</h1>
+  <p align="center"><b>An AI-assisted platform for career discovery, structured learning, and programming practice.</b></p>
+  <p align="center">
+    <a href="https://github.com/SMDHussain912/Web-server/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT License"></a>
+    <img src="https://img.shields.io/badge/frontend-React_18-61DAFB.svg" alt="React 18">
+    <img src="https://img.shields.io/badge/build-Vite-646CFF.svg" alt="Vite">
+    <img src="https://img.shields.io/badge/backend-Node.js_%2B_Express-339933.svg" alt="Node.js and Express">
+    <img src="https://img.shields.io/badge/database-MongoDB-47A248.svg" alt="MongoDB">
+    <img src="https://img.shields.io/badge/AI-OpenRouter-7C3AED.svg" alt="OpenRouter">
+  </p>
+</p>
 
-**An AI-assisted career discovery and programming-learning platform.**
+> **Development status: Active development.** Career Navigator has a working backend foundation and a React client. Course/lesson navigation and some dashboard UI integrations are currently being repaired and verified. This README distinguishes implemented API capabilities from completed user-facing workflows.
 
-Career Navigator brings career-oriented learning into one place. It combines a React frontend with a Node.js/Express API and MongoDB to support course discovery, lesson-based learning, progress tracking, and AI-assisted learning content.
+## Table of Contents
 
-> **Project status:** Active development. The backend includes several learning APIs, while parts of the frontend experience are still being integrated. See [Project status](#project-status) before using this as a production application.
+- [What is Career Navigator?](#what-is-career-navigator)
+- [Vision and Design Goals](#vision-and-design-goals)
+- [Features and Implementation Status](#features-and-implementation-status)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Quick Start](#quick-start)
+- [Environment Configuration](#environment-configuration)
+- [API Overview](#api-overview)
+- [Project Structure](#project-structure)
+- [Development Roadmap](#development-roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
----
+## What is Career Navigator?
 
-## Overview
+Career Navigator is an AI-assisted career discovery and programming-learning application. It is designed to bring course exploration, structured lessons, learning progress, assessments, and AI-supported study content into one platform.
 
-Career Navigator is being built to help learners explore technical subjects, follow structured courses, and monitor their learning journey. The application is organized as a client/server project:
+The project follows a client/server architecture:
 
-- **Client:** React single-page application powered by Vite.
-- **Server:** Node.js and Express REST API.
-- **Database:** MongoDB with Mongoose.
-- **AI services:** OpenRouter Chat Completions API for supported content-generation features.
+- **React client** provides the browser-based learning experience.
+- **Express API** handles authentication, course data, progress, and learning services.
+- **MongoDB** stores application and learning data through Mongoose.
+- **OpenRouter** powers supported AI lesson, syllabus, and quiz generation workflows.
 
-## Features
+The goal is to make technical learning more structured and help learners connect what they study with the skills they want to develop.
 
-### Available backend capabilities
+## Vision and Design Goals
 
-- Account registration, login, and session-based authentication.
-- Course catalogue and course/lesson retrieval.
-- Authenticated lesson-completion and learning-progress endpoints.
-- Dashboard statistics and an achievements API.
-- Profile updates.
-- AI-assisted lesson, syllabus, and quiz generation.
-- Notes and bookmarks APIs.
-- Health-check endpoint.
+1. **Learning paths, not disconnected tutorials** — organize technical topics into courses and lessons.
+2. **Progress that belongs to the learner** — keep learning activity associated with authenticated user accounts.
+3. **AI as a learning assistant** — generate supporting lesson material, syllabi, and quizzes.
+4. **Clear separation of concerns** — keep UI, API routes, services, and database models independently organized.
+5. **Honest feature states** — distinguish working backend endpoints from frontend experiences that are still in progress.
 
-### Current limitations
+## Features and Implementation Status
 
-- Notes and bookmarks have backend API support, but dedicated frontend pages and navigation are not yet available.
-- The dashboard achievement counter is not yet connected to the achievements API.
-- Course detail and lesson viewer frontend flows are still being aligned with the backend response contract.
-- Code execution is disabled and the `/api/runCode` endpoint returns HTTP `503`. It must remain disabled until an isolated execution sandbox is implemented.
+| Area | Current implementation |
+|---|---|
+| Authentication | Registration, login, logout, and session-based user authentication |
+| Course catalogue | Backend course listing with difficulty, category, and search filters |
+| Course details | Course and lesson retrieval API; frontend integration in progress |
+| Lesson learning | Lesson retrieval and authenticated completion API; frontend flow requires verification |
+| Learning dashboard | Statistics API is implemented; dashboard UI integration is in progress |
+| Achievements | Authenticated achievements retrieval API; unlock logic and UI integration are incomplete |
+| AI learning tools | Authenticated lesson, syllabus, and quiz generation endpoints |
+| Notes | Authenticated backend API; dedicated frontend experience not yet implemented |
+| Bookmarks | Authenticated backend API; dedicated frontend experience not yet implemented |
+| Code execution | Disabled; endpoint returns HTTP 503 until a secure isolated runner exists |
 
-Feature availability can change as development continues. The limitations above are intentional disclosures, not promises of completed functionality.
+**Important:** An API endpoint does not automatically mean its complete user interface or end-to-end workflow is finished. Check the current source and test results before relying on a feature.
 
-## Technology stack
+## Architecture
 
-| Layer | Technology |
-| --- | --- |
-| Frontend | React 18, React Router, Vite |
-| UI utilities | lucide-react, react-hot-toast |
-| Backend | Node.js, Express 5 |
-| Database | MongoDB, Mongoose |
-| Authentication | Express Session, bcryptjs |
-| Validation | Zod |
-| AI integration | OpenRouter API |
-| Security middleware | Helmet, express-rate-limit |
-| Testing | Jest, Supertest |
-
-## Repository structure
+Career Navigator uses a layered client/server design:
 
 ```text
-Web-server/
-├── client/
-│   ├── src/
-│   │   ├── components/       Shared UI components
-│   │   ├── context/          Application context
-│   │   └── pages/            Application pages
-│   ├── package.json
-│   └── vite.config.js
-├── config/                   Application configuration
-├── middleware/               Express middleware
-├── models/                   Mongoose models
-├── routes/                   API route modules
-├── services/                 Application services
-├── courses/                  Course data
-├── server.js                 Express application entry point
-├── package.json              Backend dependencies and scripts
-└── .env.example              Environment variable template
+                  Learner
+                     |
+                     v
+          React 18 + React Router
+                (Vite client)
+                     |
+               HTTP / JSON
+                     |
+                     v
+             Node.js + Express
+                (REST API)
+                     |
+          +----------+----------+
+          |          |          |
+          v          v          v
+       Auth       Services    AI tools
+      Session   Course/User   OpenRouter
+          |          |
+          +-----+----+
+                |
+                v
+          MongoDB + Mongoose
 ```
 
-## Getting started
+**Backend responsibilities**
+
+- Express application and API routing
+- Session-based authentication and authorization
+- Course and lesson retrieval
+- User statistics and learning progress
+- Notes, bookmarks, and achievements data
+- AI-assisted learning content generation
+
+**Frontend responsibilities**
+
+- Authentication screens and protected routes
+- Course catalogue and filtering
+- Course and lesson presentation
+- Dashboard, exams, and profile views
+
+## Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Language | JavaScript |
+| Frontend | React 18, React Router 6 |
+| Frontend tooling | Vite 5 |
+| UI utilities | lucide-react, react-hot-toast |
+| Backend runtime | Node.js |
+| API framework | Express 5 |
+| Database | MongoDB, Mongoose |
+| Authentication | express-session, bcryptjs |
+| Validation | Zod |
+| AI integration | OpenRouter Chat Completions API |
+| Security middleware | Helmet, express-rate-limit |
+| Testing tools | Jest, Supertest |
+
+## Quick Start
 
 ### Prerequisites
 
-Install the following before running the project:
-
-- Node.js (an active LTS release is recommended)
+- Node.js (current LTS recommended)
 - npm
 - MongoDB (local instance or hosted cluster)
-- An OpenRouter API key for AI-powered generation
+- OpenRouter API key (required for AI generation)
 
 ### 1. Clone the repository
 
@@ -93,40 +144,15 @@ git clone https://github.com/SMDHussain912/Web-server.git
 cd Web-server
 ```
 
-### 2. Install server dependencies
+### 2. Install dependencies
+
+Install backend dependencies:
 
 ```bash
 npm install
 ```
 
-### 3. Configure environment variables
-
-Create your local environment file:
-
-```bash
-cp .env.example .env
-```
-
-Configure the values required by your environment:
-
-| Variable | Purpose | Required |
-| --- | --- | --- |
-| `PORT` | HTTP port for the Express server (defaults to `3000`) | No |
-| `NODE_ENV` | Runtime environment | Recommended |
-| `SESSION_SECRET` | Secret used to sign session cookies | Yes |
-| `MONGODB_URI` | MongoDB connection string | Yes for database-backed features |
-| `API_KEY` | OpenRouter API key | Yes for AI generation |
-| `ALLOWED_ORIGINS` | Comma-separated allowed browser origins | Optional |
-
-Generate a strong session secret with:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-**Security:** Keep your real `.env` file private. Never commit API keys, database credentials, session secrets, or other private configuration.
-
-### 4. Install client dependencies
+Install frontend dependencies:
 
 ```bash
 cd client
@@ -134,7 +160,34 @@ npm install
 cd ..
 ```
 
-### 5. Start the development servers
+### 3. Configure environment variables
+
+Create a local environment file:
+
+```bash
+cp .env.example .env
+```
+
+Configure the following values:
+
+| Variable | Description | Required |
+|---|---|---|
+| `PORT` | Express server port (default: `3000`) | No |
+| `NODE_ENV` | Runtime environment | Recommended |
+| `SESSION_SECRET` | Secret used to sign session cookies | Yes |
+| `MONGODB_URI` | MongoDB connection string | No; defaults to local MongoDB |
+| `API_KEY` | OpenRouter API key | For AI generation |
+| `ALLOWED_ORIGINS` | Comma-separated browser origins allowed by the API | Optional |
+
+Generate a strong session secret:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Never commit your real `.env` file, credentials, API keys, or session secrets.
+
+### 4. Run the development servers
 
 Start the backend from the repository root:
 
@@ -142,122 +195,138 @@ Start the backend from the repository root:
 npm run dev
 ```
 
-In a second terminal, start the Vite client:
+Start the frontend in a second terminal:
 
 ```bash
 cd client
 npm run dev
 ```
 
-Open the local URL printed by Vite in your terminal. The development client is configured to send API and authentication requests to the backend.
+Open the local development URL printed by Vite. The Vite configuration proxies API and authentication requests to the backend.
 
-### 6. Build and run the production client
-
-Build the frontend:
+### 5. Build the frontend
 
 ```bash
 cd client
 npm run build
-cd ..
 ```
 
-Then start the server:
+The production frontend output is configured for `client/build`. Start the backend with:
 
 ```bash
+cd ..
 npm start
 ```
 
-The frontend build is generated in `client/build`. The Express application serves that directory when the production build is present.
+## API Overview
 
-## API overview
-
-The following routes are implemented by the application server. Routes marked **Auth required** require a valid signed-in session.
+The following endpoints are defined in the Express application. Routes marked **Authenticated** require a valid user session.
 
 ### Authentication and account
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `/api/me` | Get the current signed-in user (**Auth required**) |
+| Method | Endpoint | Purpose |
+|---|---|---|
 | POST | `/login` | Sign in |
-| POST | `/register` | Register an account |
+| POST | `/register` | Create an account |
 | GET | `/logout` | End the current session |
+| GET | `/api/me` | Get the current user (**Authenticated**) |
+| POST | `/api/profile` | Update profile (**Authenticated**) |
 
-### Learning and progress
+### Courses and learning progress
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `/api/stats` | Get learning statistics (**Auth required**) |
-| GET | `/api/progress` | Get learning progress (**Auth required**) |
-| GET | `/api/courses` | List available courses |
-| GET | `/api/courses/:courseId` | Get course details and lessons |
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/courses` | List courses; supports difficulty, category, and search filters |
+| GET | `/api/courses/:courseId` | Get a course and its lessons |
 | GET | `/api/courses/:courseId/lesson/:lessonNumber` | Get a lesson |
-| POST | `/api/courses/:courseId/lesson/:lessonNumber/complete` | Mark a lesson complete (**Auth required**) |
-| GET | `/api/my-courses` | Get the signed-in user's courses (**Auth required**) |
-| GET | `/api/achievements` | Get achievements (**Auth required**) |
+| POST | `/api/courses/:courseId/lesson/:lessonNumber/complete` | Save lesson completion (**Authenticated**) |
+| GET | `/api/my-courses` | Get the signed-in user's courses (**Authenticated**) |
+| GET | `/api/stats` | Get learning statistics (**Authenticated**) |
+| GET | `/api/progress` | Get learning progress (**Authenticated**) |
+| GET | `/api/achievements` | Get achievement records (**Authenticated**) |
 
 ### AI-assisted learning
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| POST | `/api/lessons/generate` | Generate lesson content (**Auth required**) |
-| POST | `/api/lessons/syllabus` | Generate a course syllabus (**Auth required**) |
-| POST | `/api/lessons/quiz` | Generate quiz content (**Auth required**) |
+| Method | Endpoint | Purpose |
+|---|---|---|
+| POST | `/api/lessons/generate` | Generate lesson content (**Authenticated**) |
+| POST | `/api/lessons/syllabus` | Generate a course syllabus (**Authenticated**) |
+| POST | `/api/lessons/quiz` | Generate quiz content (**Authenticated**) |
 
-### Notes, bookmarks, and utilities
+### Notes, bookmarks, and system
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `/api/notes` | List notes (**Auth required**) |
-| POST | `/api/notes` | Create a note (**Auth required**) |
-| GET | `/api/bookmarks` | List bookmarks (**Auth required**) |
-| POST | `/api/bookmarks` | Create or update a bookmark (**Auth required**) |
-| DELETE | `/api/bookmarks/:itemId` | Delete a bookmark (**Auth required**) |
-| GET | `/api/health` | Check API health |
-| POST | `/api/runCode` | Disabled; responds with HTTP `503` |
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/api/notes` | List notes (**Authenticated**) |
+| POST | `/api/notes` | Save a note (**Authenticated**) |
+| GET | `/api/bookmarks` | List bookmarks (**Authenticated**) |
+| POST | `/api/bookmarks` | Add or update a bookmark (**Authenticated**) |
+| DELETE | `/api/bookmarks/:itemId` | Remove a bookmark (**Authenticated**) |
+| GET | `/api/health` | API health information |
+| POST | `/api/runCode` | Disabled; responds with HTTP 503 |
 
-For request schemas and response details, refer to the corresponding route and service implementation in the source code.
+## Project Structure
 
-## Project status
+```text
+Web-server/
+├── client/
+│   ├── src/
+│   │   ├── components/       Shared React components
+│   │   ├── context/          Authentication context
+│   │   └── pages/            Login, dashboard, courses, lessons, exam, profile
+│   ├── package.json
+│   └── vite.config.js
+├── config/                   App and database configuration
+├── middleware/               Express middleware
+├── models/                   Mongoose models
+├── routes/                   Authentication, exam, and API routes
+├── services/                 Course, user, and lesson services
+├── courses/                  Course seed data
+├── server.js                 Express application entry point
+├── package.json              Backend dependencies and scripts
+└── .env.example              Environment variable template
+```
 
-Career Navigator is a work in progress. The backend and frontend do not yet provide a fully integrated experience for every capability.
+## Development Roadmap
 
-Before deploying this project for real users:
+| Phase | Focus | Intended outcome |
+|---|---|---|
+| 1 | Core platform | Stable authentication, API, and database foundation |
+| 2 | Course experience | Reliable catalogue, course detail, and lesson navigation |
+| 3 | Learning progress | Explicit lesson completion and persistent user progress |
+| 4 | Dashboard | Accurate statistics, achievements, loading, and error states |
+| 5 | Study tools | Notes and bookmarks user interface |
+| 6 | AI learning | Reliable lesson, syllabus, and quiz generation workflows |
+| 7 | Quality and release | Automated tests, responsive UI, security review, and deployment checks |
 
-1. Complete and verify the course-detail and lesson-viewer flows against the API response shapes.
-2. Connect the dashboard achievement display to the achievements API.
-3. Build the Notes and Bookmarks frontend experience.
-4. Keep code execution disabled until a secure, resource-limited sandbox is available.
-5. Review session-cookie settings, CORS/origin configuration, secrets, logging, and production database access.
-6. Run the automated tests and a production frontend build in the target environment.
-
-Do not treat the presence of an API endpoint as proof that its corresponding UI workflow is complete.
+Roadmap entries describe development goals, not claims that those milestones have already shipped.
 
 ## Contributing
 
-Contributions, bug reports, and thoughtful suggestions are welcome.
+Contributions and issue reports are welcome.
 
 1. Fork the repository.
 2. Create a focused branch for your change.
-3. Keep changes consistent with the existing client/server architecture and API contracts.
-4. Add or update tests where appropriate.
-5. Run the relevant tests and frontend build locally.
-6. Open a pull request describing the change and the checks you actually ran.
+3. Keep frontend behavior consistent with the backend API contract.
+4. Add or update tests when changing behavior.
+5. Run the relevant tests and production build locally.
+6. Open a pull request with a clear summary and the checks you actually ran.
 
-Please include reproduction steps for bug reports and avoid posting secrets, personal data, or production credentials in issues.
+For bug reports, include reproduction steps and relevant error output. Do not publish credentials, private user data, or production secrets.
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for the complete terms.
+Career Navigator is licensed under the **MIT License**. See [LICENSE](./LICENSE) for the complete license text.
 
 ## Author
 
 **Shaik Mahammad Hussain**
 
 - GitHub: [@SMDHussain912](https://github.com/SMDHussain912)
-- Repository: [Career Navigator](https://github.com/SMDHussain912/Web-server)
+- Project: [Career Navigator](https://github.com/SMDHussain912/Web-server)
 
 ---
 
 <p align="center">
-  Built to make learning technology and exploring career paths more accessible.
+  <b>Explore skills. Build knowledge. Navigate your career.</b>
 </p>
