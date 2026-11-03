@@ -2,7 +2,7 @@
   "name": "careerrecommendation",
   "version": "2.0.0",
   "description": "AI-powered career recommendation and learning platform with MongoDB",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Shaik Mahammad Hussain",
   "type": "commonjs",
   "main": "server.js",
