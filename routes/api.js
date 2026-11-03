@@ -1,11 +1,46 @@
 const express = require('express');
 const router = express.Router();
+const { z } = require('zod');
 const { authMiddleware } = require('../middleware/auth');
 const userService = require('../services/userService');
 const aiService = require('../services/aiService');
 const Achievement = require('../models/Achievement');
 const Bookmark = require('../models/Bookmark');
 const Note = require('../models/Note');
+
+// CSRF middleware - validate Origin header for state-changing requests
+// Task 2: CSRF protection - Origin header validation for browser-based requests
+const csrfMiddleware = (req, res, next) => {
+    // Skip CSRF for non-browser requests (no Origin header) or non-state-changing methods
+    if (!req.headers.origin) {
+        return next();
+    }
+
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+        ? process.env.ALLOWED_ORIGINS.split(',')
+        : [];
+
+    // In development, allow localhost origins
+    const isDevelopment =
+        !allowedOrigins.length ||
+        allowedOrigins.some((origin) =>
+            origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')
+        );
+
+    // Allow if:
+    // 1. Development mode with localhost origin, OR
+    // 2. Production origin is explicitly allowed
+    const originIsAllowed =
+        isDevelopment ||
+        allowedOrigins.includes(req.headers.origin);
+
+    if (originIsAllowed) {
+        return next();
+    }
+
+    // Reject requests from unauthorized origins
+    return res.status(403).json({ error: 'CSRF validation failed' });
+};
 
 // Get user progress
 router.get('/progress', authMiddleware, async (req, res) => {
@@ -101,12 +136,23 @@ router.get('/bookmarks', authMiddleware, async (req, res) => {
 });
 
 // Add bookmark
-router.post('/bookmarks', authMiddleware, async (req, res) => {
+router.post('/bookmarks', authMiddleware, csrfMiddleware, async (req, res) => {
     try {
-        const userId = req.session.userId;
-        const { type, itemId, title } = req.body;
+        // Validate request body
+        const bookmarkSchema = z.object({
+            type: z.string().trim(),
+            itemId: z.string().trim(),
+            title: z.string().trim(),
+        });
 
-        await userService.addBookmark(userId, type, itemId, title);
+        const result = bookmarkSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({ error: result.error.errors[0].message });
+        }
+
+        const { type, itemId, title } = result.data;
+
+        await userService.addBookmark(req.session.userId, type, itemId, title);
         res.json({ success: true, message: 'Bookmark added' });
     } catch (error) {
         console.error('Error adding bookmark:', error);
@@ -115,7 +161,7 @@ router.post('/bookmarks', authMiddleware, async (req, res) => {
 });
 
 // Remove bookmark
-router.delete('/bookmarks/:itemId', authMiddleware, async (req, res) => {
+router.delete('/bookmarks/:itemId', authMiddleware, csrfMiddleware, async (req, res) => {
     try {
         const userId = req.session.userId;
         const { itemId } = req.params;
@@ -142,12 +188,23 @@ router.get('/notes', authMiddleware, async (req, res) => {
 });
 
 // Save note
-router.post('/notes', authMiddleware, async (req, res) => {
+router.post('/notes', authMiddleware, csrfMiddleware, async (req, res) => {
     try {
-        const userId = req.session.userId;
-        const { courseId, lessonId, content } = req.body;
+        // Validate request body
+        const noteSchema = z.object({
+            courseId: z.string().trim(),
+            lessonId: z.number().int(),
+            content: z.string().trim(),
+        });
 
-        await userService.saveNote(userId, courseId, lessonId, content);
+        const result = noteSchema.safeParse(req.body);
+        if (!result.success) {
+            return res.status(400).json({ error: result.error.errors[0].message });
+        }
+
+        const { courseId, lessonId, content } = result.data;
+
+        await userService.saveNote(req.session.userId, courseId, lessonId, content);
         res.json({ success: true, message: 'Note saved' });
     } catch (error) {
         console.error('Error saving note:', error);
@@ -156,7 +213,7 @@ router.post('/notes', authMiddleware, async (req, res) => {
 });
 
 // AI Career recommendations
-router.post('/recommendations', authMiddleware, async (req, res) => {
+router.post('/recommendations', authMiddleware, csrfMiddleware, async (req, res) => {
     try {
         const { skills, interests, education } = req.body;
         const recommendations = await aiService.getCareerRecommendations(
@@ -180,4 +237,4 @@ router.get('/health', (req, res) => {
     });
 });
 
-module.exports = router;
+module.exports = { csrfMiddleware, authMiddleware, userService, aiService, Achievement, Bookmark, Note };

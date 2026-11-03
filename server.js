@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { exec } = require('child_process');
 require('dotenv').config();
 
@@ -17,18 +19,66 @@ const apiRoutes = require('./routes/api');
 
 const app = express();
 
-/* ================= MIDDLEWARE ================= */
+/* ================= SESSION CONFIGURATION ================= */
+
+// Trust first proxy for session cookie security behind reverse proxies
+// This is important for production deployments on Render, Heroku, etc.
+// When behind a proxy, the session cookie's secure flag and IP-based
+// session fixation protection work correctly.
+app.set('trust proxy', 1); // Trust the first proxy chain
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(helmet());
+app.use(
+    rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // limit each IP to 100 requests per windowMs
+        standardHeaders: true,
+        legacyHeaders: false,
+    })
+);
+// Configure CORS - restrict to specific origins in production
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : [];
+app.use(
+    (req, res, next) => {
+        const origin = req.headers.origin;
+        if (allowedOrigins.length > 0) {
+            if (allowedOrigins.includes(origin)) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+            }
+        } else {
+            // Development: allow local origins
+            if (
+                origin &&
+                (origin.startsWith('http://localhost') ||
+                    origin.startsWith('http://127.0.0.1'))
+            ) {
+                res.setHeader('Access-Control-Allow-Origin', origin);
+            }
+        }
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader(
+            'Access-Control-Allow-Headers',
+            'Content-Type, Authorization'
+        );
+        if (req.method === 'OPTIONS') {
+            return res.sendStatus(200);
+        }
+        next();
+    }
+);
 app.use(session(config.session));
+app.use("/", authRoutes);
 
 // Serve React build if available
 const clientBuildPath = path.join(__dirname, 'client/build');
 const fs = require('fs');
 if (fs.existsSync(clientBuildPath)) {
     console.log('✅ Serving React frontend from build folder');
-    app.use(express.static(clientBuildPath));
+app.use("/", authRoutes);
 }
 
 // Make session available to all routes
@@ -48,7 +98,7 @@ const authMiddleware = (req, res, next) => {
 
 /* ================= AUTH ROUTES ================= */
 
-app.use("/", authRoutes);
+
 
 /* ================= USER API ================= */
 
@@ -296,49 +346,17 @@ app.get("/api/achievements", authMiddleware, async (req, res) => {
 
 /* ================= CODE EXECUTION ================= */
 
-app.post("/api/runCode", async (req, res) => {
-    const { code, language } = req.body;
-    
-    if (language === 'javascript') {
-        try {
-            const result = eval(code);
-            res.json({ output: String(result) });
-        } catch (error) {
-            res.json({ output: error.message });
-        }
-        return;
-    }
-
-    // Java execution
-    if (language === 'java') {
-        const tempDir = path.join(__dirname, config.java.tempDir);
-        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
-
-        const filePath = path.join(tempDir, 'Main.java');
-        fs.writeFileSync(filePath, code);
-
-        exec(`javac -d ${tempDir} ${filePath} && java -cp ${tempDir} Main`, 
-            { timeout: config.java.timeout }, 
-            (error, stdout, stderr) => {
-                try {
-                    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-                    const classFile = path.join(tempDir, 'Main.class');
-                    if (fs.existsSync(classFile)) fs.unlinkSync(classFile);
-                } catch (e) {}
-
-                if (stderr) return res.json({ output: stderr });
-                if (stdout) return res.json({ output: stdout });
-                if (error) return res.json({ output: error.message });
-                res.json({ output: 'Program ran successfully (no output)' });
-            }
-        );
-        return;
-    }
-
-    res.json({ output: 'Language not supported' });
+// Code execution temporarily disabled until a properly isolated sandbox is available.
+// Rule 5: Never execute user-submitted JavaScript using eval() or Function().
+// Rule 6: Java execution also disabled until safe isolation is implemented.
+app.post('/api/runCode', authMiddleware, (req, res) => {
+    res
+        .status(503)
+        .json({
+            error:
+                'Code execution temporarily disabled. Please check back later for a secure implementation.',
+        });
 });
-
-/* ================= HEALTH CHECK ================= */
 
 app.get('/api/health', (req, res) => {
     res.json({ 
