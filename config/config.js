@@ -3,12 +3,17 @@ require('dotenv').config();
 module.exports = {
     port: process.env.PORT || 3000,
     session: {
-        secret: process.env.SESSION_SECRET || 'career-ai-secret-key-change-in-production',
+        // Rule 10: Require a strong production SESSION_SECRET - no default fallback
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
+            // Rule 11: Add HttpOnly flag to prevent JavaScript access to session cookie
+            httpOnly: true,
+            // Rule 10: Secure flag must be enabled in production; disable in dev for HTTP
+            secure: process.env.NODE_ENV === 'production',
             maxAge: 1000 * 60 * 60 * 24, // 24 hours
-            secure: process.env.NODE_ENV === 'production'
+            sameSite: 'lax' // Help prevent CSRF attacks
         }
     },
     mongodb: {
