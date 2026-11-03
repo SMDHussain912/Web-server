@@ -7,34 +7,39 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [selectedLesson, setSelectedLesson] = useState(null);
 
   useEffect(() => {
     fetch('/api/courses/' + courseId)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Course not found');
+        return res.json();
+      })
       .then(data => {
         setCourse(data);
-        if (data && data.lessons) {
-          setLessons(data.lessons.map(l => ({
-            number: l.lessonNumber || 0,
-            title: l.title || '',
-            description: l.description || '',
-            completed: false,
-            locked: true
-          }));
-        }
+        // Transform lessons from backend data
+        const lessonList = data.lessons ? data.lessons.map(l => ({
+          id: l.lessonNumber || 0,
+          title: l.title || 'Lesson',
+          number: l.lessonNumber || 0,
+          description: l.description || '',
+          completed: l.completed || false,
+          locked: l.locked || false
+        })) : [];
+        setLessons(lessonList);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching course:', err);
+        setError('Failed to load course');
         setLoading(false);
       });
   }, [courseId]);
 
   const handleLessonSelect = (lesson) => {
     setSelectedLesson(lesson);
-    navigate('/lesson/' + lesson.number);
+    navigate('/lesson/' + courseId + '/' + lesson.number);
   };
 
   if (loading) {
@@ -86,38 +91,46 @@ const CourseDetail = () => {
           </div>
         </div>
 
+        {/* Lessons Roadmap */
         <div className="mb-6">
           <h2 className="text-lg font-bold text-white mb-3">Roadmap</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {lessons.map((lesson) => (
               <div
-                key={lesson.id}
+                key={lesson.number}
                 className="border rounded-md p-2 cursor-pointer hover:bg-slate-800 transition-colors"
+                onClick={() => handleLessonSelect(lesson)}
               >
                 <span className="font-medium text-sm">{lesson.number}</span>
                 <span className="text-xs opacity-70">{lesson.title}</span>
+                {lesson.completed && <span className="text-green-400">✓</span>}
+                {lesson.locked && <span className="text-red-400">🔒</span>}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Selected Lesson */
         {selectedLesson && (
           <div className="card p-6 mb-6">
             <h3 className="text-lg font-bold text-white mb-3">{selectedLesson.title}</h3>
             <p className="text-gray-400 text-sm">{selectedLesson.description}</p>
           </div>
-        )
+        )}
 
         {!selectedLesson && (
           <div>
             <p className="text-gray-400 mb-4">Select a lesson to begin:</p>
             {lessons.map((lesson) => (
               <div
-                key={lesson.id}
+                key={lesson.number}
                 className="border rounded-md p-2 cursor-pointer hover:bg-slate-800 transition-colors"
+                onClick={() => handleLessonSelect(lesson)}
               >
                 <span className="font-medium text-sm">{lesson.number}</span>
                 <span className="text-xs opacity-70">{lesson.title}</span>
+                {lesson.completed && <span className="text-green-400">✓</span>}
+                {lesson.locked && <span className="text-red-400">🔒</span>}
               </div>
             ))}
           </div>
@@ -125,6 +138,6 @@ const CourseDetail = () => {
       </div>
     </div>
   );
-};
+}
 
 export default CourseDetail;
