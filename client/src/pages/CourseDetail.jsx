@@ -7,36 +7,34 @@ const CourseDetail = () => {
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [lessons, setLessons] = useState([]);
+  const [selectedLesson, setSelectedLesson] = useState(null);
 
   useEffect(() => {
     fetch('/api/courses/' + courseId)
-      .then(res => {
-        if (!res.ok) throw new Error('Course not found');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(data => {
         setCourse(data);
-        // Transform course data for display
-        const lessonList = data.lessons ? data.lessons.map(l => ({
-          id: l.lessonNumber || 0,
-          title: l.title || 'Lesson',
-          description: l.description || '',
-          completed: false,
-          locked: true
-        })) : [];
-        setLessons(lessonList);
+        if (data && data.lessons) {
+          setLessons(data.lessons.map(l => ({
+            number: l.lessonNumber || 0,
+            title: l.title || '',
+            description: l.description || '',
+            completed: false,
+            locked: true
+          }));
+        }
         setLoading(false);
       })
       .catch(err => {
-        setError('Failed to load course');
+        console.error('Error fetching course:', err);
         setLoading(false);
       });
   }, [courseId]);
 
   const handleLessonSelect = (lesson) => {
-    navigate('/lesson/' + lesson.id);
+    setSelectedLesson(lesson);
+    navigate('/lesson/' + lesson.number);
   };
 
   if (loading) {
@@ -88,10 +86,9 @@ const CourseDetail = () => {
           </div>
         </div>
 
-        {/* Lessons Roadmap */
         <div className="mb-6">
           <h2 className="text-lg font-bold text-white mb-3">Roadmap</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {lessons.map((lesson) => (
               <div
                 key={lesson.id}
@@ -104,13 +101,12 @@ const CourseDetail = () => {
           </div>
         </div>
 
-        {/* Selected Lesson */
         {selectedLesson && (
           <div className="card p-6 mb-6">
             <h3 className="text-lg font-bold text-white mb-3">{selectedLesson.title}</h3>
             <p className="text-gray-400 text-sm">{selectedLesson.description}</p>
           </div>
-        )}
+        )
 
         {!selectedLesson && (
           <div>
@@ -125,7 +121,7 @@ const CourseDetail = () => {
               </div>
             ))}
           </div>
-        )}
+        )
       </div>
     </div>
   );
