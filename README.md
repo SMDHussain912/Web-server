@@ -1,257 +1,212 @@
-# Career Navigator - AI-Powered Learning Platform
+# Career Navigator
 
-A modern, feature-rich Node.js web application for career recommendations, interactive learning, and AI-powered education. Built with Express.js, EJS templates, Firebase authentication, and AI integration.
+Career Navigator is an AI-assisted learning platform for exploring programming courses, studying lessons, tracking progress, and generating learning content.
 
-## ✨ New Features
+The project uses a React single-page frontend, an Express/Node.js backend, and MongoDB.
 
-### 🎨 Modern UI/UX
-- **Glassmorphism Design**: Beautiful frosted glass effect throughout the app
-- **Smooth Animations**: Fade-in, slide, and hover effects for better UX
-- **Responsive Design**: Mobile-first approach with breakpoints for all devices
-- **Font Awesome Icons**: Professional iconography throughout
-- **Gradient Backgrounds**: Modern purple-blue gradient theme
+> **Status:** Active development. Some frontend flows are still being completed; see the limitations section below.
 
-### 🤖 AI-Powered Features
-- **AI Career Recommendations**: Get personalized career paths based on your skills, interests, and education
-- **AI-Generated Exams**: Create custom practice exams on any topic
-- **AI Code Checking**: Get instant feedback on your code solutions
-- **AI Project Generation**: Generate mini-projects for each lesson
+## Features
 
-### 📚 Enhanced Learning
-- **Interactive Course Roadmap**: Visual progress tracking with locked/unlocked lessons
-- **Code Editor**: Built-in Java compiler with run and check functionality
-- **Lesson Notes**: Take and save notes while learning
-- **Bookmarks**: Save courses and lessons for quick access
-- **Achievement System**: Earn badges for milestones (first lesson, 7-day streak, etc.)
+- Browse published courses and filter by search term, difficulty, and category.
+- View course and lesson content.
+- Track lesson completion for signed-in users.
+- View dashboard statistics: completed lessons, exams taken, average score, learning streak, and total score.
+- Register, log in, and manage a session.
+- Update profile data through the backend API.
+- Generate lessons, course syllabi, and quizzes using the AI lesson service.
+- Save and retrieve notes and bookmarks through backend APIs.
+- Retrieve achievements through an authenticated API.
 
-### 📊 Progress Tracking
-- **Learning Streak**: Track consecutive days of learning
-- **Statistics Dashboard**: View lessons completed, exams taken, average scores
-- **Exam Results**: Detailed history of all exam performances
-- **Profile Page**: Comprehensive overview of your learning journey
+Code execution is currently disabled and returns HTTP 503 until a secure isolated execution environment is available.
 
-### 🔐 Authentication & Security
-- **Firebase Authentication**: Secure email/password authentication
-- **Session Management**: Express-session for secure user sessions
-- **Protected Routes**: Middleware-based route protection
+## Technology stack
 
-### 🔌 REST API
-- **API Endpoints**: Full REST API for mobile app integration
-- **JSON Responses**: All data available via API
-- **Health Check**: API status monitoring endpoint
+| Area | Technologies |
+| --- | --- |
+| Frontend | React 18, React Router 6, Vite |
+| UI | lucide-react, react-hot-toast |
+| Backend | Node.js, Express 5 |
+| Database | MongoDB, Mongoose |
+| Authentication | Express Session, bcryptjs |
+| Validation | Zod |
+| AI integration | OpenRouter Chat Completions API |
+| Security | Helmet, express-rate-limit |
+| Tests | Jest, Supertest (development dependencies) |
 
-## 🛠️ Technologies Used
+## Repository structure
 
-- **Backend**: Node.js, Express.js
-- **Frontend**: EJS templates, HTML5, CSS3, JavaScript
-- **Authentication**: Firebase Admin SDK
-- **Database**: Firebase Firestore
-- **AI Integration**: OpenRouter API (GPT-4o-mini)
-- **Code Execution**: Java compiler (javac)
-- **Icons**: Font Awesome 6.4.0
+    Web-server/
+    ├── client/
+    │   ├── src/
+    │   │   ├── components/   Shared React components
+    │   │   ├── context/      Authentication context
+    │   │   └── pages/        Login, dashboard, courses, lessons, exam, profile
+    │   ├── package.json
+    │   └── vite.config.js
+    ├── config/               Application and database configuration
+    ├── middleware/           Backend middleware
+    ├── models/               Mongoose models
+    ├── routes/               Express route modules
+    ├── services/             Course, user, and lesson services
+    ├── courses/              Course seed data
+    ├── server.js              Express application and API entry point
+    ├── package.json           Backend dependencies and scripts
+    └── .env.example           Environment variable template
 
-## 📁 Project Structure
+## Requirements
 
-```
-Web-server/
-├── config/
-│   ├── config.js          # Application configuration
-│   └── database.js        # Firebase database setup
-├── middleware/
-│   └── auth.js            # Authentication middleware
-├── services/
-│   ├── aiService.js       # AI API integration
-│   └── userService.js     # User data operations
-├── routes/
-│   ├── auth.js            # Authentication routes
-│   ├── dashboard.js       # Dashboard routes
-│   ├── courses.js         # Course management
-│   ├── exam.js            # Exam generation & submission
-│   ├── ai.js              # AI recommendations
-│   ├── profile.js         # User profile
-│   └── api.js             # REST API endpoints
-├── views/
-│   ├── index.ejs          # Landing page
-│   ├── login.ejs          # Login/Register
-│   ├── dashboard.ejs      # Main dashboard
-│   ├── courses.ejs        # Course listing
-│   ├── course-roadmap.ejs # Course progress
-│   ├── lesson.ejs         # Individual lesson
-│   ├── exam.ejs           # Exam interface
-│   ├── info.ejs           # Career recommendations
-│   ├── profile.ejs        # User profile
-│   ├── achievements.ejs   # Achievements page
-│   ├── results.ejs        # Exam results
-│   ├── notes.ejs          # User notes
-│   └── bookmarks.ejs      # Saved bookmarks
-├── public/
-│   └── js/
-│       └── auth.js        # Firebase client auth
-├── courses/
-│   └── java.json          # Java course content
-├── server.js              # Main application entry
-├── package.json
-├── .env.example           # Environment variables template
-└── README.md
-```
+- Node.js (a currently supported LTS release is recommended).
+- npm.
+- MongoDB, locally or through a hosted connection string.
+- An OpenRouter API key for AI generation.
 
-## 🚀 Installation
+## Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Smdgameking/Web-server.git
-   cd Web-server
-   ```
+### 1. Clone the repository
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+    git clone https://github.com/SMDHussain912/Web-server.git
+    cd Web-server
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Fill in your credentials in `.env`:
-   - `FIREBASE_KEY`: Your Firebase service account key (JSON)
-   - `API_KEY`: Your OpenRouter API key
-   - `SESSION_SECRET`: A secure random string
+### 2. Install backend dependencies
 
-4. **Configure Firebase**
-   - Update Firebase config in `public/js/auth.js` with your Firebase project details
+    npm install
 
-5. **Start the server**
-   ```bash
-   node server.js
-   ```
+### 3. Configure environment variables
 
-6. **Open your browser**
-   ```
-   http://localhost:3000
-   ```
+    cp .env.example .env
 
-## 📋 Prerequisites
+Set these values in the local .env file:
 
-- **Node.js** (v14 or higher)
-- **Java** (JDK 17 or higher) - Required for code execution
-- **Firebase Project** - For authentication and database
-- **OpenRouter API Key** - For AI features
+| Variable | Purpose | Required |
+| --- | --- | --- |
+| PORT | Express port; defaults to 3000 | No |
+| NODE_ENV | Runtime environment | Recommended |
+| SESSION_SECRET | Secret used to sign session cookies | Yes |
+| MONGODB_URI | MongoDB connection string | Yes for database use |
+| API_KEY | OpenRouter API key | Yes for AI generation |
+| ALLOWED_ORIGINS | Comma-separated allowed browser origins | Optional |
 
-## 🎯 Features Overview
+Generate a strong session secret:
 
-### For Students
-- 📖 **Interactive Lessons**: Learn with hands-on coding exercises
-- 🎓 **AI Exams**: Generate and take custom exams on any topic
-- 💻 **Code Practice**: Write and run Java code directly in browser
-- 📝 **Notes**: Take notes while learning
-- 🔖 **Bookmarks**: Save important lessons
-- 🏆 **Achievements**: Earn badges and track milestones
+    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
-### For Career Growth
-- 🤖 **AI Recommendations**: Get personalized career paths
-- 📊 **Progress Tracking**: Monitor your learning journey
-- 🎯 **Skill Assessment**: Test your knowledge with exams
-- 📈 **Performance Analytics**: View detailed statistics
+Never commit .env files, credentials, API keys, or session secrets.
 
-## 🔧 Configuration
+### 4. Install frontend dependencies
 
-### Environment Variables
+    cd client
+    npm install
+    cd ..
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `PORT` | Server port (default: 3000) | No |
-| `NODE_ENV` | Environment (development/production) | No |
-| `SESSION_SECRET` | Session encryption key | Yes |
-| `FIREBASE_KEY` | Firebase service account JSON | Yes |
-| `API_KEY` | OpenRouter API key | Yes |
+### 5. Run in development
 
-## 📱 API Endpoints
+Start the backend in one terminal:
 
-### Public Endpoints
-- `GET /` - Landing page
-- `GET /login` - Login page
-- `POST /createSession` - Create user session
+    npm run dev
 
-### Protected Endpoints (Require Authentication)
-- `GET /dashboard` - User dashboard
-- `GET /courses` - Course listing
-- `GET /course/:id` - Course roadmap
-- `GET /course/:id/lesson/:num` - Lesson page
-- `GET /exam` - Exam page
-- `POST /generateExam` - Generate AI exam
-- `POST /submitExam` - Submit exam
-- `GET /results` - Exam results
-- `GET /info` - Career recommendations
-- `POST /getRecommendations` - Get AI recommendations
-- `GET /profile` - User profile
-- `GET /achievements` - User achievements
+Start the frontend in another terminal:
 
-### REST API (JSON)
-- `GET /api/health` - Health check
-- `GET /api/courses` - All courses
-- `GET /api/stats` - User statistics
-- `GET /api/progress` - Learning progress
-- `POST /api/recommendations` - Career recommendations
-- `GET /api/bookmarks` - User bookmarks
-- `POST /api/bookmarks` - Add bookmark
-- `DELETE /api/bookmarks/:id` - Remove bookmark
-- `GET /api/notes` - User notes
-- `POST /api/notes` - Save note
+    cd client
+    npm run dev
 
-## 🎨 Design Improvements
+Vite uses port 3001 and proxies API and authentication requests to the backend at http://localhost:3000.
 
-### Before
-- Basic HTML/CSS with inline styles
-- Simple gradient backgrounds
-- Limited responsiveness
-- Basic navigation
+Open http://localhost:3001 in your browser.
 
-### After
-- **Modular CSS**: Organized styles with CSS variables
-- **Glassmorphism**: Modern frosted glass effects
-- **Animations**: Smooth transitions and hover effects
-- **Icons**: Font Awesome throughout
-- **Mobile-First**: Fully responsive design
-- **Accessibility**: Better contrast and readability
+### 6. Build and run the production frontend
 
-## 🔮 Future Enhancements
+    cd client
+    npm run build
+    cd ..
+    npm start
 
-- [ ] Add more courses (Python, Web Development, Data Science)
-- [ ] Implement dark/light mode toggle
-- [ ] Add social features (leaderboards, sharing)
-- [ ] Certificate generation on course completion
-- [ ] Video lessons integration
-- [ ] Mobile app (React Native)
-- [ ] Advanced analytics dashboard
-- [ ] Community forums
-- [ ] Live coding sessions
-- [ ] Mentor matching system
+The Vite build is written to client/build. Express serves this build when the directory exists. The backend uses PORT or defaults to 3000.
 
-## 🐛 Known Issues
+## API reference
 
-- Java compiler requires JDK 17+ installed
-- Firebase config needs to be updated in production
-- AI API rate limits apply
+Endpoints marked **Authenticated** require a valid session cookie.
 
-## 📝 License
+### Authentication
 
-ISC License
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | /login | Authenticate with email and password |
+| POST | /register | Create an account |
+| GET | /logout | Destroy the current session |
+| GET | /api/me | Return signed-in user information (**Authenticated**) |
 
-## 👨‍💻 Author
+### User and progress
 
-**Shaik Mahammad Hussain**
-- Computer Engineering Student
-- Interested in Robotics, Machine Learning, and Game Development
-- GitHub: [@Smdgameking](https://github.com/Smdgameking)
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/stats | Learning statistics (**Authenticated**) |
+| GET | /api/progress | Lesson and exam progress (**Authenticated**) |
+| POST | /api/profile | Update profile fields (**Authenticated**) |
+| GET | /api/achievements | Retrieve achievements (**Authenticated**) |
 
-## 🙏 Acknowledgments
+### Courses and lessons
 
-- Firebase for authentication and database
-- OpenRouter for AI capabilities
-- Font Awesome for icons
-- Express.js community
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/courses | List published courses; supports difficulty, category, and search filters |
+| GET | /api/courses/:courseId | Get a course and its lessons |
+| GET | /api/courses/:courseId/lesson/:lessonNumber | Get a lesson |
+| POST | /api/courses/:courseId/lesson/:lessonNumber/complete | Save lesson completion (**Authenticated**) |
+| GET | /api/my-courses | Get courses with user progress (**Authenticated**) |
+| POST | /api/courses | Create a course (**Authenticated**) |
+| POST | /api/courses/:courseId/lessons | Add a lesson (**Authenticated**) |
+| DELETE | /api/courses/:courseId | Delete a course (**Authenticated**) |
 
----
+### AI lesson tools
 
-**Version 2.0.0** - Complete redesign with modern features and improved UX
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | /api/lessons/generate | Generate a lesson (**Authenticated**) |
+| POST | /api/lessons/syllabus | Generate a course syllabus (**Authenticated**) |
+| POST | /api/lessons/quiz | Generate a quiz (**Authenticated**) |
+
+### Notes and bookmarks
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/notes | List notes; optionally filter by courseId (**Authenticated**) |
+| POST | /api/notes | Save a note (**Authenticated**) |
+| GET | /api/bookmarks | List bookmarks (**Authenticated**) |
+| POST | /api/bookmarks | Add or update a bookmark (**Authenticated**) |
+| DELETE | /api/bookmarks/:itemId | Remove a bookmark (**Authenticated**) |
+
+### Health and code execution
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | /api/health | API health and version information |
+| POST | /api/runCode | Currently disabled; returns HTTP 503 |
+
+## Current status and limitations
+
+- The React frontend currently defines login, dashboard, courses, course detail, lesson, exam, and profile routes.
+- Notes and bookmarks have backend API support, but dedicated frontend pages and navigation are not currently present.
+- The dashboard currently reads statistics from /api/stats; its achievement counter is not yet connected to the achievements endpoint.
+- Course detail and lesson viewer frontend flows are being aligned with the existing course and lesson API contract.
+- Code execution is intentionally disabled until a properly isolated sandbox is implemented.
+- Jest and Supertest are included as development dependencies. Run the tests locally and inspect their actual output before considering the application verified.
+
+Update this section as the remaining features are implemented and tested.
+
+## Contributing
+
+1. Create a feature or fix branch from main.
+2. Keep frontend requests consistent with the API routes and response shapes in server.js.
+3. Run relevant tests and the frontend production build.
+4. Report what was actually tested and disclose anything that could not be tested.
+5. Open a pull request with a concise summary.
+
+## License
+
+ISC License.
+
+## Author
+
+**Shaik Mahammad Hussain**  
+GitHub: [@SMDHussain912](https://github.com/SMDHussain912)
