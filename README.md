@@ -19,7 +19,7 @@ The implementation status below describes the state documented for this reposito
   </p>
 </p>
 
-> **Development status: Active development.** Career Navigator has a working backend foundation and a React client. Course/lesson navigation and some dashboard UI integrations are currently being repaired and verified. This README distinguishes implemented API capabilities from completed user-facing workflows.
+> **Development status: Experimental prototype (pre-UniSphere).** Career Navigator has a backend foundation and a React client. Some course/lesson navigation and dashboard integrations are still being repaired and verified. This README distinguishes implemented API capabilities from completed user-facing workflows; the project is not production-ready.
 
 ## Table of Contents
 
