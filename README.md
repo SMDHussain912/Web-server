@@ -1,3 +1,11 @@
+> **Project status: Experimental / Pre-UniSphere.** Career Navigator was developed before UniSphere as an independent prototype for testing and understanding career-discovery, structured-learning, course-progress, and AI-assisted content-generation features. It is retained as an experimental learning project and technical reference, not as a production-ready platform or a completed part of UniSphere.
+
+## Project background and relationship to UniSphere
+
+Career Navigator was an earlier project used to explore product ideas and learn how career recommendations, learning journeys, backend APIs, frontend integration, and AI-assisted study workflows could be implemented. The experiments and engineering lessons from this work helped build understanding ahead of UniSphere. UniSphere is a separate, later platform with its own product scope and architecture; Career Navigator is not its production backend or a dependency.
+
+The implementation status below describes the state documented for this repository. A feature listed as implemented still requires current testing before it should be treated as reliable. This repository is experimental and should not be used to process sensitive real-user data without a separate security and production-readiness review.
+
 <p align="center">
   <h1 align="center">Career Navigator</h1>
   <p align="center"><b>An AI-assisted platform for career discovery, structured learning, and programming practice.</b></p>
